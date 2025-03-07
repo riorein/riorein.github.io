@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Калькулятор призовых</title>
-  <!-- Ссылка на манифест -->
   <link rel="manifest" href="manifest.json">
-  <!-- Иконка для PWA -->
   <link rel="icon" type="image/png" href="icon.png">
   <style>
     /* Общие стили для темной темы */
@@ -112,13 +110,13 @@
     </select>
 
     <label for="wins">Количество побед:</label>
-    <input type="number" id="wins" placeholder="Введите количество побед" min="0" max="5">
+    <input type="number" id="wins" placeholder="Введите количество побед" min="0" max="5" oninput="validateInput(this)">
 
     <label for="losses">Количество поражений:</label>
-    <input type="number" id="losses" placeholder="Введите количество поражений" min="0" max="5">
+    <input type="number" id="losses" placeholder="Введите количество поражений" min="0" max="5" oninput="validateInput(this)">
 
     <label for="wonSets">Выигранные партии в поражениях:</label>
-    <input type="number" id="wonSets" placeholder="Введите количество выигранных партий" min="0">
+    <input type="number" id="wonSets" placeholder="Введите количество выигранных партий" min="0" oninput="validateInput(this)">
 
     <label for="place">Занятое место:</label>
     <select id="place">
@@ -139,15 +137,15 @@
   </div>
 
   <script>
-    // Регистрируем сервисный worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then((registration) => {
-          console.log('ServiceWorker зарегистрирован:', registration);
-        })
-        .catch((error) => {
-          console.log('Ошибка регистрации ServiceWorker:', error);
-        });
+    // Функция для проверки ввода
+    function validateInput(input) {
+      const value = input.value;
+      if (isNaN(value) || value.includes('.')) {
+        input.value = value.replace(/[^0-9]/g, ''); // Удаляем всё, кроме цифр
+        document.getElementById('error').innerText = "Пожалуйста, вводите только цифры.";
+      } else {
+        document.getElementById('error').innerText = ""; // Очищаем сообщение об ошибке
+      }
     }
 
     // Расценки для лиг
@@ -210,6 +208,17 @@
       const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize;
 
       document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+    }
+
+    // Регистрируем сервисный worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then((registration) => {
+          console.log('ServiceWorker зарегистрирован:', registration);
+        })
+        .catch((error) => {
+          console.log('Ошибка регистрации ServiceWorker:', error);
+        });
     }
   </script>
 </body>
