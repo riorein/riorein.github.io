@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор призовых</title>
+  <style>
+    /* Общие стили для темной темы */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #121212; /* Темный фон */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #e0e0e0; /* Светлый текст */
+    }
+
+    .container {
+      background-color: #1e1e1e; /* Темный контейнер */
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: #ffffff; /* Белый заголовок */
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #bbbbbb; /* Светло-серый текст */
+    }
+
+    select, input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #333333; /* Темная граница */
+      border-radius: 5px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      background-color: #2d2d2d; /* Темный фон полей ввода */
+      color: #e0e0e0; /* Светлый текст */
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: #3498db; /* Синяя граница при фокусе */
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #3498db; /* Синяя кнопка */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9; /* Темно-синий при наведении */
+    }
+
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #27ae60; /* Зеленый цвет результата */
+    }
+
+    .error {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #e74c3c; /* Красный цвет для ошибок */
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #777777; /* Серый текст в подвале */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Калькулятор призовых</h1>
+    <label for="league">Выберите лигу:</label>
+    <select id="league">
+      <option value="super">Супер лига</option>
+      <option value="a">А лига</option>
+      <option value="b">Б лига</option>
+      <option value="c">С лига</option>
+    </select>
+
+    <label for="wins">Количество побед:</label>
+    <input type="number" id="wins" placeholder="Введите количество побед" min="0" max="5">
+
+    <label for="losses">Количество поражений:</label>
+    <input type="number" id="losses" placeholder="Введите количество поражений" min="0" max="5">
+
+    <label for="wonSets">Выигранные партии в поражениях:</label>
+    <input type="number" id="wonSets" placeholder="Введите количество выигранных партий" min="0">
+
+    <label for="place">Занятое место:</label>
+    <select id="place">
+      <option value="1">1 место</option>
+      <option value="2">2 место</option>
+      <option value="3">3 место</option>
+      <option value="4">4 место</option>
+    </select>
+
+    <button onclick="calculatePrize()">Рассчитать призовые</button>
+
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
+
+    <div class="footer">
+      <p>Рассчитайте ваши призовые за турнир по настольному теннису!</p>
+    </div>
+  </div>
+
+  <script>
+    // Расценки для лиг
+    const leagueRates = {
+      super: { win: 1800, loss: 600, wonSet: 200 }, // Супер лига
+      a: { win: 1500, loss: 400, wonSet: 200 },     // А лига
+      b: { win: 1100, loss: 200, wonSet: 150 },     // Б лига
+      c: { win: 900, loss: 100, wonSet: 100 }       // С лига
+    };
+
+    // Призовые за места
+    const placePrizes = {
+      1: 1000,
+      2: 600,
+      3: 400,
+      4: 0 // За 4 место нет доплаты
+    };
+
+    function calculatePrize() {
+      const league = document.getElementById('league').value;
+      const wins = parseInt(document.getElementById('wins').value) || 0;
+      const losses = parseInt(document.getElementById('losses').value) || 0;
+      const wonSets = parseInt(document.getElementById('wonSets').value) || 0;
+      const place = document.getElementById('place').value;
+
+      // Очистка предыдущих сообщений
+      document.getElementById('error').innerText = "";
+      document.getElementById('result').innerText = "";
+
+      // Проверка на корректность введенных данных
+      if (isNaN(wins) || isNaN(losses) || isNaN(wonSets)) {
+        document.getElementById('error').innerText = "Пожалуйста, введите корректные числа.";
+        return;
+      }
+
+      // Проверка на максимальное количество игр
+      if (wins + losses > 5) {
+        document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
+        return;
+      }
+
+      // Проверка на корректность выигранных партий
+      const maxWonSets = losses * 3; // Максимум 3 выигранные партии за каждое поражение
+      if (wonSets > maxWonSets) {
+        document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
+        return;
+      }
+
+      // Расчет призовых за победы
+      const winPrize = wins * leagueRates[league].win;
+
+      // Расчет призовых за поражения
+      const lossPrize = losses * leagueRates[league].loss; // Фиксированная сумма за каждое поражение
+      const wonSetsPrize = wonSets * leagueRates[league].wonSet; // Доплата за выигранные партии
+
+      // Призовые за место
+      const placePrize = placePrizes[place];
+
+      // Общая сумма
+      const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize;
+
+      document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+    }
+  </script>
+</body>
+</html>
