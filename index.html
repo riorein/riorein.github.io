@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Калькулятор призовых</title>
+  <!-- Ссылка на манифест -->
+  <link rel="manifest" href="manifest.json">
+  <!-- Иконка для PWA -->
+  <link rel="icon" type="image/png" href="icon.png">
   <style>
     /* Общие стили для темной темы */
     body {
@@ -135,6 +139,17 @@
   </div>
 
   <script>
+    // Регистрируем сервисный worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then((registration) => {
+          console.log('ServiceWorker зарегистрирован:', registration);
+        })
+        .catch((error) => {
+          console.log('Ошибка регистрации ServiceWorker:', error);
+        });
+    }
+
     // Расценки для лиг
     const leagueRates = {
       super: { win: 1800, loss: 600, wonSet: 200 }, // Супер лига
