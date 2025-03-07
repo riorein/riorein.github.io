@@ -184,42 +184,48 @@ function validateInput(input) {
     return;
   }
 
-  // Проверка на корректность введенных данных
-  if (isNaN(wins) || isNaN(losses) || isNaN(wonSets)) {
-    document.getElementById('error').innerText = "Пожалуйста, введите корректные числа.";
-    return;
+  // Если есть хотя бы одна победа или 5 поражений, выполняем расчет
+  if (wins > 0 || losses === 5) {
+    // Проверка на корректность введенных данных
+    if (isNaN(wins) || isNaN(losses) || isNaN(wonSets)) {
+      document.getElementById('error').innerText = "Пожалуйста, введите корректные числа.";
+      return;
+    }
+
+    // Проверка на максимальное количество игр
+    if (wins + losses > 5) {
+      document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
+      return;
+    }
+
+    // Проверка на корректность выигранных партий
+    const maxWonSets = losses * 3; // Максимум 3 выигранные партии за каждое поражение
+    if (wonSets > maxWonSets) {
+      document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
+      return;
+    }
+
+    // Расчет призовых за победы
+    const winPrize = wins * leagueRates[league].win;
+
+    // Расчет призовых за поражения
+    const lossPrize = losses * leagueRates[league].loss; // Фиксированная сумма за каждое поражение
+    const wonSetsPrize = wonSets * leagueRates[league].wonSet; // Доплата за выигранные партии
+
+    // Призовые за место
+    const placePrize = placePrizes[place];
+
+    // Доплата за участие (только для Супер лиги)
+    const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
+
+    // Общая сумма
+    const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
+
+    document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+  } else {
+    // Если нет ни одной победы и не 5 поражений
+    document.getElementById('error').innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
   }
-
-  // Проверка на максимальное количество игр
-  if (wins + losses > 5) {
-    document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
-    return;
-  }
-
-  // Проверка на корректность выигранных партий
-  const maxWonSets = losses * 3; // Максимум 3 выигранные партии за каждое поражение
-  if (wonSets > maxWonSets) {
-    document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
-    return;
-  }
-
-  // Расчет призовых за победы
-  const winPrize = wins * leagueRates[league].win;
-
-  // Расчет призовых за поражения
-  const lossPrize = losses * leagueRates[league].loss; // Фиксированная сумма за каждое поражение
-  const wonSetsPrize = wonSets * leagueRates[league].wonSet; // Доплата за выигранные партии
-
-  // Призовые за место
-  const placePrize = placePrizes[place];
-
-  // Доплата за участие (только для Супер лиги)
-  const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
-
-  // Общая сумма
-  const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
-
-  document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
 }
     // Регистрируем сервисный worker
     if ('serviceWorker' in navigator) {
