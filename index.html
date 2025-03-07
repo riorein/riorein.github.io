@@ -167,59 +167,60 @@ function validateInput(input) {
       4: 0 // За 4 место нет доплаты
     };
 
-    function calculatePrize() {
-      const league = document.getElementById('league').value;
-      const wins = parseInt(document.getElementById('wins').value)  0;
-      const losses = parseInt(document.getElementById('losses').value)  0;
-      const wonSets = parseInt(document.getElementById('wonSets').value)  0;
-      const place = document.getElementById('place').value;
+   function calculatePrize() {
+  const league = document.getElementById('league').value;
+  const wins = parseInt(document.getElementById('wins').value) || 0;
+  const losses = parseInt(document.getElementById('losses').value) || 0;
+  const wonSets = parseInt(document.getElementById('wonSets').value) || 0;
+  const place = document.getElementById('place').value;
 
-      // Очистка предыдущих сообщений
-      document.getElementById('error').innerText = "";
-      document.getElementById('result').innerText = "";
+  // Очистка предыдущих сообщений
+  document.getElementById('error').innerText = "";
+  document.getElementById('result').innerText = "";
 
-      // Проверка на корректность введенных данных
-      if (isNaN(wins)  isNaN(losses)  isNaN(wonSets)) {
-        document.getElementById('error').innerText = "Пожалуйста, введите корректные числа.";
-        return;
-      }
+  // Проверка на нулевые значения
+  if (wins === 0 && losses === 0 && wonSets === 0) {
+    document.getElementById('error').innerText = "Ошибка: введите данные для расчета.";
+    return;
+  }
 
-      // Проверка на максимальное количество игр
-      if (wins + losses > 5) {
-        document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
-        return;
-      }
+  // Проверка на корректность введенных данных
+  if (isNaN(wins) || isNaN(losses) || isNaN(wonSets)) {
+    document.getElementById('error').innerText = "Пожалуйста, введите корректные числа.";
+    return;
+  }
 
-      // Проверка на корректность выигранных партий
-      const maxWonSets = losses * 3; // Максимум 3 выигранные партии за каждое поражение
-      if (wonSets > maxWonSets) {
-        document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
-        return;
-      }
- // Проверка на корректность введенных данных
-      if (isNaN(wins)  isNaN(losses) || isNaN(wonSets)) {
-        document.getElementById('error').innerText = "Пожалуйста, введите корректные числа.";
-        return;
-      }
-      // Расчет призовых за победы
-      const winPrize = wins * leagueRates[league].win;
+  // Проверка на максимальное количество игр
+  if (wins + losses > 5) {
+    document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
+    return;
+  }
 
-      // Расчет призовых за поражения
-      const lossPrize = losses * leagueRates[league].loss; // Фиксированная сумма за каждое поражение
-      const wonSetsPrize = wonSets * leagueRates[league].wonSet; // Доплата за выигранные партии
+  // Проверка на корректность выигранных партий
+  const maxWonSets = losses * 3; // Максимум 3 выигранные партии за каждое поражение
+  if (wonSets > maxWonSets) {
+    document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
+    return;
+  }
 
-      // Призовые за место
-      const placePrize = placePrizes[place];
+  // Расчет призовых за победы
+  const winPrize = wins * leagueRates[league].win;
 
-      // Доплата за участие (только для Супер лиги)
-      const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
+  // Расчет призовых за поражения
+  const lossPrize = losses * leagueRates[league].loss; // Фиксированная сумма за каждое поражение
+  const wonSetsPrize = wonSets * leagueRates[league].wonSet; // Доплата за выигранные партии
 
-      // Общая сумма
-      const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
+  // Призовые за место
+  const placePrize = placePrizes[place];
 
-      document.getElementById('result').innerText = Ваши призовые: ${totalPrize.toFixed(2)} рублей;
-    }
+  // Доплата за участие (только для Супер лиги)
+  const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
 
+  // Общая сумма
+  const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
+
+  document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+}
     // Регистрируем сервисный worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
