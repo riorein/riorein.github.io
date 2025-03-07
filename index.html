@@ -167,7 +167,7 @@ function validateInput(input) {
       4: 0 // За 4 место нет доплаты
     };
 
-   function calculatePrize() {
+  function calculatePrize() {
   const league = document.getElementById('league').value;
   const wins = parseInt(document.getElementById('wins').value) || 0;
   const losses = parseInt(document.getElementById('losses').value) || 0;
@@ -181,6 +181,17 @@ function validateInput(input) {
   // Проверка на нулевые значения
   if (wins === 0 && losses === 0 && wonSets === 0) {
     document.getElementById('error').innerText = "Ошибка: введите данные для расчета.";
+    return;
+  }
+
+  // Проверка на невозможные условия для занятых мест
+  if (wins === 5 && (place === "2" || place === "3" || place === "4")) {
+    document.getElementById('error').innerText = "Ошибка: при 5 победах нельзя занять 2, 3 или 4 место.";
+    return;
+  }
+
+  if (losses === 5 && (place === "1" || place === "2" || place === "3")) {
+    document.getElementById('error').innerText = "Ошибка: при 5 поражениях нельзя занять 1, 2 или 3 место.";
     return;
   }
 
