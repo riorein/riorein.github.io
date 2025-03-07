@@ -137,16 +137,19 @@
   </div>
 
   <script>
-    // Функция для проверки ввода
-    function validateInput(input) {
-      const value = input.value;
-      if (isNaN(value) || value.includes('.')) {
-        input.value = value.replace(/[^0-9]/g, ''); // Удаляем всё, кроме цифр
-        document.getElementById('error').innerText = "Пожалуйста, вводите только цифры.";
-      } else {
-        document.getElementById('error').innerText = ""; // Очищаем сообщение об ошибке
-      }
-    }
+   // Функция для проверки ввода
+function validateInput(input) {
+  const value = input.value;
+  // Удаляем всё, кроме цифр (включая плюсики и точки)
+  input.value = value.replace(/[^0-9]/g, '');
+
+  // Если введены некорректные символы, показываем сообщение об ошибке
+  if (value !== input.value) {
+    document.getElementById('error').innerText = "Пожалуйста, вводите только цифры.";
+  } else {
+    document.getElementById('error').innerText = ""; // Очищаем сообщение об ошибке
+  }
+}
 
     // Расценки для лиг
     const leagueRates = {
