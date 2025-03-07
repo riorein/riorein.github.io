@@ -150,10 +150,10 @@
 
     // Расценки для лиг
     const leagueRates = {
-      super: { win: 1800, loss: 600, wonSet: 200 }, // Супер лига
-      a: { win: 1500, loss: 400, wonSet: 200 },     // А лига
-      b: { win: 1100, loss: 200, wonSet: 150 },     // Б лига
-      c: { win: 900, loss: 100, wonSet: 100 }       // С лига
+      super: { win: 1800, loss: 400, wonSet: 300, participation: 500 }, // Супер лига
+      a: { win: 1500, loss: 400, wonSet: 200 },                         // А лига
+      b: { win: 1100, loss: 200, wonSet: 150 },                         // Б лига
+      c: { win: 900, loss: 100, wonSet: 100 }                           // С лига
     };
 
     // Призовые за места
@@ -204,8 +204,11 @@
       // Призовые за место
       const placePrize = placePrizes[place];
 
+      // Доплата за участие (только для Супер лиги)
+      const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
+
       // Общая сумма
-      const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize;
+      const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
 
       document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
     }
