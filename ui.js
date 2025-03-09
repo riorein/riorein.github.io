@@ -2,9 +2,11 @@ import { validateInput } from './validation.js';
 import { calculatePrize } from './calculator.js';
 
 export function initUI() {
-  // Автоматический пересчёт при изменении полей
+  console.log('initUI started');
   document.querySelectorAll('input, select').forEach(element => {
+    console.log('Adding input listener to:', element);
     element.addEventListener('input', () => {
+      console.log('Input event triggered on:', element);
       if (element.tagName === 'INPUT') validateInput(element);
       calculatePrize();
     });
@@ -12,6 +14,7 @@ export function initUI() {
 
   // Функция сброса формы
   function resetForm() {
+    console.log('Reset button clicked');
     document.getElementById('league').value = 'super';
     document.getElementById('wins').value = '';
     document.getElementById('losses').value = '';
@@ -24,7 +27,9 @@ export function initUI() {
     document.getElementById('losses').classList.remove('invalid');
     document.getElementById('wonSets').classList.remove('invalid');
   }
-
+console.log('Adding reset listener');
+  document.getElementById('resetButton').addEventListener('click', resetForm);
+}
   // Привязка кнопки сброса
   document.getElementById('resetButton').addEventListener('click', resetForm);
 
