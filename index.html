@@ -10,18 +10,18 @@
     /* Общие стили для темной темы */
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #121212; /* Темный фон */
+      background-color: #121212;
       margin: 0;
       padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: #e0e0e0; /* Светлый текст */
+      color: #e0e0e0;
     }
 
     .container {
-      background-color: #1e1e1e; /* Темный контейнер */
+      background-color: #1e1e1e;
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -33,38 +33,44 @@
     h1 {
       font-size: 1.8rem;
       margin-bottom: 1.5rem;
-      color: #ffffff; /* Белый заголовок */
+      color: #ffffff;
     }
 
     label {
       display: block;
       margin-bottom: 0.5rem;
       font-weight: bold;
-      color: #bbbbbb; /* Светло-серый текст */
+      color: #bbbbbb;
     }
 
     select, input {
       width: 100%;
       padding: 0.75rem;
       margin-bottom: 1rem;
-      border: 1px solid #333333; /* Темная граница */
+      border: 1px solid #333333;
       border-radius: 5px;
       font-size: 1rem;
       box-sizing: border-box;
-      background-color: #2d2d2d; /* Темный фон полей ввода */
-      color: #e0e0e0; /* Светлый текст */
+      background-color: #2d2d2d;
+      color: #e0e0e0;
     }
 
     select:focus, input:focus {
       outline: none;
-      border-color: #3498db; /* Синяя граница при фокусе */
+      border-color: #3498db;
       box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+
+    /* Стиль для полей с ошибками */
+    .invalid {
+      border-color: #e74c3c;
+      box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
     }
 
     button {
       width: 100%;
       padding: 0.75rem;
-      background-color: #3498db; /* Синяя кнопка */
+      background-color: #3498db;
       color: white;
       border: none;
       border-radius: 5px;
@@ -74,27 +80,27 @@
     }
 
     button:hover {
-      background-color: #2980b9; /* Темно-синий при наведении */
+      background-color: #2980b9;
     }
 
     .result {
       margin-top: 1.5rem;
       font-size: 1.2rem;
       font-weight: bold;
-      color: #27ae60; /* Зеленый цвет результата */
+      color: #27ae60;
     }
 
     .error {
       margin-top: 1.5rem;
       font-size: 1rem;
       font-weight: bold;
-      color: #e74c3c; /* Красный цвет для ошибок */
+      color: #e74c3c;
     }
 
     .footer {
       margin-top: 2rem;
       font-size: 0.9rem;
-      color: #777777; /* Серый текст в подвале */
+      color: #777777;
     }
   </style>
 </head>
@@ -126,7 +132,7 @@
       <option value="4">4 место</option>
     </select>
 
-    <button onclick="calculatePrize()">Рассчитать призовые</button>
+    <button onclick="resetForm()">Сбросить</button>
 
     <div class="result" id="result"></div>
     <div class="error" id="error"></div>
@@ -137,26 +143,27 @@
   </div>
 
   <script>
-   // Функция для проверки ввода
-function validateInput(input) {
-  const value = input.value;
-  // Удаляем всё, кроме цифр (включая плюсики и точки)
-  input.value = value.replace(/[^0-9]/g, '');
+    // Функция для проверки ввода
+    function validateInput(input) {
+      const value = input.value;
+      input.value = value.replace(/[^0-9]/g, '');
 
-  // Если введены некорректные символы, показываем сообщение об ошибке
-  if (value !== input.value) {
-    document.getElementById('error').innerText = "Пожалуйста, вводите только цифры.";
-  } else {
-    document.getElementById('error').innerText = ""; // Очищаем сообщение об ошибке
-  }
-}
+      if (value !== input.value) {
+        document.getElementById('error').innerText = "Пожалуйста, вводите только цифры.";
+        input.classList.add('invalid');
+      } else {
+        input.classList.remove('invalid');
+        document.getElementById('error').innerText = "";
+        calculatePrize(); // Автоматический пересчёт при корректном вводе
+      }
+    }
 
     // Расценки для лиг
     const leagueRates = {
-      super: { win: 1800, loss: 400, wonSet: 300, participation: 500 }, // Супер лига
-      a: { win: 1500, loss: 400, wonSet: 200 },                         // А лига
-      b: { win: 1100, loss: 200, wonSet: 150 },                         // Б лига
-      c: { win: 900, loss: 100, wonSet: 100 }                           // С лига
+      super: { win: 1800, loss: 400, wonSet: 300, participation: 500 },
+      a: { win: 1500, loss: 400, wonSet: 200 },
+      b: { win: 1100, loss: 200, wonSet: 150 },
+      c: { win: 900, loss: 100, wonSet: 100 }
     };
 
     // Призовые за места
@@ -164,80 +171,98 @@ function validateInput(input) {
       1: 1000,
       2: 600,
       3: 400,
-      4: 0 // За 4 место нет доплаты
+      4: 0
     };
 
-  function calculatePrize() {
-  const league = document.getElementById('league').value;
-  const wins = parseInt(document.getElementById('wins').value) || 0;
-  const losses = parseInt(document.getElementById('losses').value) || 0;
-  const wonSets = parseInt(document.getElementById('wonSets').value) || 0;
-  const place = document.getElementById('place').value;
+    // Функция расчёта призовых
+    function calculatePrize() {
+      const league = document.getElementById('league').value;
+      const wins = parseInt(document.getElementById('wins').value) || 0;
+      const losses = parseInt(document.getElementById('losses').value) || 0;
+      const wonSets = parseInt(document.getElementById('wonSets').value) || 0;
+      const place = document.getElementById('place').value;
 
-  // Очистка предыдущих сообщений
-  document.getElementById('error').innerText = "";
-  document.getElementById('result').innerText = "";
+      const winsInput = document.getElementById('wins');
+      const lossesInput = document.getElementById('losses');
+      const wonSetsInput = document.getElementById('wonSets');
 
-  // Проверка на нулевые значения
-  if (wins === 0 && losses === 0 && wonSets === 0) {
-    document.getElementById('error').innerText = "Ошибка: введите данные для расчета.";
-    return;
-  }
+      // Очистка предыдущих сообщений и стилей
+      document.getElementById('error').innerText = "";
+      document.getElementById('result').innerText = "";
+      winsInput.classList.remove('invalid');
+      lossesInput.classList.remove('invalid');
+      wonSetsInput.classList.remove('invalid');
 
-  // Проверка на невозможные условия для занятых мест
-  if (wins === 5 && (place === "2" || place === "3" || place === "4")) {
-    document.getElementById('error').innerText = "Ошибка: при 5 победах нельзя занять 2, 3 или 4 место.";
-    return;
-  }
+      // Проверка на нулевые значения
+      if (wins === 0 && losses === 0 && wonSets === 0) {
+        document.getElementById('error').innerText = "Ошибка: введите данные для расчета.";
+        return;
+      }
 
-  if (losses === 5 && (place === "1" || place === "2" || place === "3")) {
-    document.getElementById('error').innerText = "Ошибка: при 5 поражениях нельзя занять 1, 2 или 3 место.";
-    return;
-  }
+      // Проверка на невозможные условия для занятых мест
+      if (wins === 5 && (place === "2" || place === "3" || place === "4")) {
+        document.getElementById('error').innerText = "Ошибка: при 5 победах нельзя занять 2, 3 или 4 место.";
+        winsInput.classList.add('invalid');
+        return;
+      }
 
-  // Если есть хотя бы одна победа или 5 поражений, выполняем расчет
-  if (wins > 0 || losses === 5) {
-    // Проверка на корректность введенных данных
-    if (isNaN(wins) || isNaN(losses) || isNaN(wonSets)) {
-      document.getElementById('error').innerText = "Пожалуйста, введите корректные числа.";
-      return;
+      if (losses === 5 && (place === "1" || place === "2" || place === "3")) {
+        document.getElementById('error').innerText = "Ошибка: при 5 поражениях нельзя занять 1, 2 или 3 место.";
+        lossesInput.classList.add('invalid');
+        return;
+      }
+
+      // Если есть хотя бы одна победа или 5 поражений, выполняем расчет
+      if (wins > 0 || losses === 5) {
+        // Проверка на максимальное количество игр
+        if (wins + losses > 5) {
+          document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
+          winsInput.classList.add('invalid');
+          lossesInput.classList.add('invalid');
+          return;
+        }
+
+        // Проверка на корректность выигранных партий
+        const maxWonSets = losses * 3;
+        if (wonSets > maxWonSets) {
+          document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
+          wonSetsInput.classList.add('invalid');
+          return;
+        }
+
+        // Расчет призовых
+        const winPrize = wins * leagueRates[league].win;
+        const lossPrize = losses * leagueRates[league].loss;
+        const wonSetsPrize = wonSets * leagueRates[league].wonSet;
+        const placePrize = placePrizes[place];
+        const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
+        const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
+
+        document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+      } else {
+        document.getElementById('error').innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
+      }
     }
 
-    // Проверка на максимальное количество игр
-    if (wins + losses > 5) {
-      document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
-      return;
+    // Функция сброса формы
+    function resetForm() {
+      document.getElementById('league').value = 'super';
+      document.getElementById('wins').value = '';
+      document.getElementById('losses').value = '';
+      document.getElementById('wonSets').value = '';
+      document.getElementById('place').value = '1';
+      document.getElementById('result').innerText = '';
+      document.getElementById('error').innerText = '';
+      document.getElementById('wins').classList.remove('invalid');
+      document.getElementById('losses').classList.remove('invalid');
+      document.getElementById('wonSets').classList.remove('invalid');
     }
 
-    // Проверка на корректность выигранных партий
-    const maxWonSets = losses * 3; // Максимум 3 выигранные партии за каждое поражение
-    if (wonSets > maxWonSets) {
-      document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
-      return;
-    }
+    // Автоматический пересчёт при изменении полей
+    document.querySelectorAll('input, select').forEach(element => {
+      element.addEventListener('input', calculatePrize);
+    });
 
-    // Расчет призовых за победы
-    const winPrize = wins * leagueRates[league].win;
-
-    // Расчет призовых за поражения
-    const lossPrize = losses * leagueRates[league].loss; // Фиксированная сумма за каждое поражение
-    const wonSetsPrize = wonSets * leagueRates[league].wonSet; // Доплата за выигранные партии
-
-    // Призовые за место
-    const placePrize = placePrizes[place];
-
-    // Доплата за участие (только для Супер лиги)
-    const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
-
-    // Общая сумма
-    const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
-
-    document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
-  } else {
-    // Если нет ни одной победы и не 5 поражений
-    document.getElementById('error').innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
-  }
-}
     // Регистрируем сервисный worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
