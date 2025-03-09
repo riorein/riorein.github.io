@@ -114,13 +114,13 @@
     </select>
 
     <label for="wins">Количество побед:</label>
-    <input type="number" id="wins" placeholder="Введите количество побед" min="0" max="5" oninput="validateInput(this)">
+    <input type="number" id="wins" placeholder="Введите количество побед" min="0" max="5">
 
     <label for="losses">Количество поражений:</label>
-    <input type="number" id="losses" placeholder="Введите количество поражений" min="0" max="5" oninput="validateInput(this)">
+    <input type="number" id="losses" placeholder="Введите количество поражений" min="0" max="5">
 
     <label for="wonSets">Выигранные партии в поражениях:</label>
-    <input type="number" id="wonSets" placeholder="Введите количество выигранных партий" min="0" oninput="validateInput(this)">
+    <input type="number" id="wonSets" placeholder="Введите количество выигранных партий" min="0">
 
     <label for="place">Занятое место:</label>
     <select id="place">
@@ -130,7 +130,7 @@
       <option value="4">4 место</option>
     </select>
 
-    <button onclick="resetForm()">Сбросить</button>
+    <button id="resetButton">Сбросить</button>
 
     <div class="result" id="result"></div>
     <div class="error" id="error"></div>
@@ -140,171 +140,9 @@
     </div>
   </div>
 
-  <script>
-    // Функция для проверки ввода и ограничения значений
-    function validateInput(input) {
-      const winsInput = document.getElementById('wins');
-      const lossesInput = document.getElementById('losses');
-      const wonSetsInput = document.getElementById('wonSets');
-      let value = input.value;
-
-      // Удаляем всё, кроме цифр
-      value = value.replace(/[^0-9]/g, '');
-      input.value = value;
-
-      // Проверка на отрицательные значения
-      if (value !== '' && parseInt(value) < 0) {
-        input.value = '0';
-        document.getElementById('error').innerText = "Ошибка: значения не могут быть отрицательными.";
-        input.classList.add('invalid');
-        return;
-      }
-
-      // Ограничение для wins и losses до 5
-      if (input.id === 'wins' || input.id === 'losses') {
-        if (value !== '' && parseInt(value) > 5) {
-          input.value = '5';
-          document.getElementById('error').innerText = "Ошибка: максимум 5 побед или поражений.";
-          input.classList.add('invalid');
-          return;
-        }
-      }
-
-      // Ограничение для wonSets до 15
-      if (input.id === 'wonSets') {
-        if (value !== '' && parseInt(value) > 15) {
-          input.value = '15';
-          document.getElementById('error').innerText = "Ошибка: максимум 15 выигранных партий.";
-          input.classList.add('invalid');
-          return;
-        }
-      }
-
-      if (value !== input.value) {
-        document.getElementById('error').innerText = "Пожалуйста, вводите только цифры.";
-        input.classList.add('invalid');
-      } else {
-        input.classList.remove('invalid');
-        document.getElementById('error').innerText = "";
-        calculatePrize();
-      }
-    }
-
-    // Расценки для лиг
-    const leagueRates = {
-      super: { win: 1800, loss: 400, wonSet: 300, participation: 500 },
-      a: { win: 1500, loss: 400, wonSet: 200 },
-      b: { win: 1100, loss: 200, wonSet: 150 },
-      c: { win: 900, loss: 100, wonSet: 100 }
-    };
-
-    // Призовые за места
-    const placePrizes = {
-      1: 1000,
-      2: 600,
-      3: 400,
-      4: 0
-    };
-
-    // Функция расчёта призовых
-    function calculatePrize() {
-      const league = document.getElementById('league').value;
-      const wins = parseInt(document.getElementById('wins').value) || 0;
-      const losses = parseInt(document.getElementById('losses').value) || 0;
-      const wonSets = parseInt(document.getElementById('wonSets').value) || 0;
-      const place = document.getElementById('place').value;
-
-      const winsInput = document.getElementById('wins');
-      const lossesInput = document.getElementById('losses');
-      const wonSetsInput = document.getElementById('wonSets');
-
-      // Очистка предыдущих сообщений и стилей
-      document.getElementById('error').innerText = "";
-      document.getElementById('result').innerText = "";
-      winsInput.classList.remove('invalid');
-      lossesInput.classList.remove('invalid');
-      wonSetsInput.classList.remove('invalid');
-
-      // Проверка на нулевые значения
-      if (wins === 0 && losses === 0 && wonSets === 0) {
-        document.getElementById('error').innerText = "Ошибка: введите данные для расчета.";
-        return;
-      }
-
-      // Проверка на невозможные условия для занятых мест
-      if (wins === 5 && (place === "2" || place === "3" || place === "4")) {
-        document.getElementById('error').innerText = "Ошибка: при 5 победах нельзя занять 2, 3 или 4 место.";
-        winsInput.classList.add('invalid');
-        return;
-      }
-
-      if (losses === 5 && (place === "1" || place === "2" || place === "3")) {
-        document.getElementById('error').innerText = "Ошибка: при 5 поражениях нельзя занять 1, 2 или 3 место.";
-        lossesInput.classList.add('invalid');
-        return;
-      }
-
-      // Если есть хотя бы одна победа или 5 поражений, выполняем расчет
-      if (wins > 0 || losses === 5) {
-        // Проверка на максимальное количество игр
-        if (wins + losses > 5) {
-          document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
-          winsInput.classList.add('invalid');
-          lossesInput.classList.add('invalid');
-          return;
-        }
-
-        // Проверка на корректность выигранных партий
-        const maxWonSets = losses * 3;
-        if (wonSets > maxWonSets) {
-          document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
-          wonSetsInput.classList.add('invalid');
-          return;
-        }
-
-        // Расчет призовых
-        const winPrize = wins * leagueRates[league].win;
-        const lossPrize = losses * leagueRates[league].loss;
-        const wonSetsPrize = wonSets * leagueRates[league].wonSet;
-        const placePrize = placePrizes[place];
-        const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
-        const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
-
-        document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
-      } else {
-        document.getElementById('error').innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
-      }
-    }
-
-    // Функция сброса формы
-    function resetForm() {
-      document.getElementById('league').value = 'super';
-      document.getElementById('wins').value = '';
-      document.getElementById('losses').value = '';
-      document.getElementById('wonSets').value = '';
-      document.getElementById('place').value = '1';
-      document.getElementById('result').innerText = '';
-      document.getElementById('error').innerText = '';
-      document.getElementById('wins').classList.remove('invalid');
-      document.getElementById('losses').classList.remove('invalid');
-      document.getElementById('wonSets').classList.remove('invalid');
-    }
-
-    // Автоматический пересчёт при изменении полей
-    document.querySelectorAll('input, select').forEach(element => {
-      element.addEventListener('input', calculatePrize);
-    });
-
-    // Регистрируем сервисный worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then((registration) => {
-          console.log('ServiceWorker зарегистрирован:', registration);
-        })
-        .catch((error) => {
-          console.log('Ошибка регистрации ServiceWorker:', error);
-        });
-    }
+  <script type="module">
+    import { initUI } from './ui.js';
+    initUI(); // Инициализация интерфейса
   </script>
 </body>
 </html>
