@@ -2,17 +2,13 @@ import { validateInput } from './validation.js';
 import { calculatePrize } from './calculator.js';
 
 export function initUI() {
-  // Автоматический пересчёт при изменении полей
   document.querySelectorAll('input, select').forEach(element => {
     element.addEventListener('input', () => {
-      if (element.tagName === 'INPUT') {
-        validateInput(element);
-      }
+      if (element.tagName === 'INPUT') validateInput(element);
       calculatePrize();
     });
   });
 
-  // Функция сброса формы
   function resetForm() {
     document.getElementById('league').value = 'super';
     document.getElementById('wins').value = '';
@@ -27,21 +23,14 @@ export function initUI() {
     document.getElementById('wonSets').classList.remove('invalid');
   }
 
-  // Привязка кнопки сброса
   document.getElementById('resetButton').addEventListener('click', resetForm);
 
-  // Регистрация сервисного worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
-      .then((registration) => {
-        console.log('ServiceWorker зарегистрирован:', registration);
-      })
-      .catch((error) => {
-        console.log('Ошибка регистрации ServiceWorker:', error);
-      });
+      .then(registration => console.log('ServiceWorker зарегистрирован:', registration))
+      .catch(error => console.log('Ошибка регистрации ServiceWorker:', error));
   }
 
-  // Функция переключения тем
   function toggleTheme() {
     document.body.classList.toggle('light');
     const isLight = document.body.classList.contains('light');
@@ -49,7 +38,6 @@ export function initUI() {
     document.getElementById('themeToggle').innerText = translations[currentLang].themeToggle[isLight ? 'dark' : 'light'];
   }
 
-  // Словарь переводов
   const translations = {
     ru: {
       title: 'Калькулятор призовых',
@@ -77,7 +65,6 @@ export function initUI() {
     }
   };
 
-  // Функция обновления текстов
   let currentLang = localStorage.getItem('lang') || 'ru';
   function updateLanguage(lang) {
     document.querySelector('h1').innerText = translations[lang].title;
@@ -94,14 +81,12 @@ export function initUI() {
     currentLang = lang;
   }
 
-  // Функция переключения языка
   function toggleLanguage() {
     const newLang = currentLang === 'ru' ? 'en' : 'ru';
     localStorage.setItem('lang', newLang);
     updateLanguage(newLang);
   }
 
-  // Инициализация тем
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'light') {
     document.body.classList.add('light');
@@ -111,7 +96,6 @@ export function initUI() {
   }
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-  // Инициализация языка
   updateLanguage(currentLang);
   document.getElementById('langToggle').addEventListener('click', toggleLanguage);
 }
