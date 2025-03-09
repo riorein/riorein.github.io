@@ -7,7 +7,6 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon.png">
   <style>
-    /* Общие стили для темной темы */
     body {
       font-family: 'Arial', sans-serif;
       background-color: #121212;
@@ -61,7 +60,6 @@
       box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
     }
 
-    /* Стиль для полей с ошибками */
     .invalid {
       border-color: #e74c3c;
       box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
@@ -143,10 +141,44 @@
   </div>
 
   <script>
-    // Функция для проверки ввода
+    // Функция для проверки ввода и ограничения значений
     function validateInput(input) {
-      const value = input.value;
-      input.value = value.replace(/[^0-9]/g, '');
+      const winsInput = document.getElementById('wins');
+      const lossesInput = document.getElementById('losses');
+      const wonSetsInput = document.getElementById('wonSets');
+      let value = input.value;
+
+      // Удаляем всё, кроме цифр
+      value = value.replace(/[^0-9]/g, '');
+      input.value = value;
+
+      // Проверка на отрицательные значения
+      if (value !== '' && parseInt(value) < 0) {
+        input.value = '0';
+        document.getElementById('error').innerText = "Ошибка: значения не могут быть отрицательными.";
+        input.classList.add('invalid');
+        return;
+      }
+
+      // Ограничение для wins и losses до 5
+      if (input.id === 'wins' || input.id === 'losses') {
+        if (value !== '' && parseInt(value) > 5) {
+          input.value = '5';
+          document.getElementById('error').innerText = "Ошибка: максимум 5 побед или поражений.";
+          input.classList.add('invalid');
+          return;
+        }
+      }
+
+      // Ограничение для wonSets до 15
+      if (input.id === 'wonSets') {
+        if (value !== '' && parseInt(value) > 15) {
+          input.value = '15';
+          document.getElementById('error').innerText = "Ошибка: максимум 15 выигранных партий.";
+          input.classList.add('invalid');
+          return;
+        }
+      }
 
       if (value !== input.value) {
         document.getElementById('error').innerText = "Пожалуйста, вводите только цифры.";
@@ -154,7 +186,7 @@
       } else {
         input.classList.remove('invalid');
         document.getElementById('error').innerText = "";
-        calculatePrize(); // Автоматический пересчёт при корректном вводе
+        calculatePrize();
       }
     }
 
