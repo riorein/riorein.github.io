@@ -1,5 +1,4 @@
 export function calculatePrize() {
-  console.log('calculatePrize started');
   const league = document.getElementById('league').value;
   const wins = parseInt(document.getElementById('wins').value) || 0;
   const losses = parseInt(document.getElementById('losses').value) || 0;
@@ -64,14 +63,10 @@ export function calculatePrize() {
     const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
     const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
 
-    console.log('Setting result:', totalPrize);
     const resultElement = document.getElementById('result');
     resultElement.innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
     resultElement.classList.remove('visible');
-    setTimeout(() => {
-      console.log('Adding visible class');
-      resultElement.classList.add('visible');
-    }, 10);
+    setTimeout(() => resultElement.classList.add('visible'), 10);
   } else {
     document.getElementById('error').innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
   }

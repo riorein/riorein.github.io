@@ -2,32 +2,30 @@ import { validateInput } from './validation.js';
 import { calculatePrize } from './calculator.js';
 
 export function initUI() {
-  console.log('initUI started');
   document.querySelectorAll('input, select').forEach(element => {
-    console.log('Adding input listener to:', element);
     element.addEventListener('input', () => {
-      console.log('Input event triggered on:', element);
       if (element.tagName === 'INPUT') validateInput(element);
       calculatePrize();
     });
   });
 
-  // Функция сброса формы
- function resetForm() {
-  console.log('Reset button clicked');
-  document.getElementById('league').value = 'super';
-  document.getElementById('wins').value = '';
-  document.getElementById('losses').value = '';
-  document.getElementById('wonSets').value = '';
-  document.getElementById('place').value = '1';
-  const resultElement = document.getElementById('result');
-  resultElement.classList.remove('visible');
-  document.getElementById('error').innerText = '';
-  document.getElementById('wins').classList.remove('invalid');
-  document.getElementById('losses').classList.remove('invalid');
-  document.getElementById('wonSets').classList.remove('invalid');
-  // Принудительно вызываем пересчёт
-  calculatePrize();
+  function resetForm() {
+    document.getElementById('league').value = 'super';
+    document.getElementById('wins').value = '';
+    document.getElementById('losses').value = '';
+    document.getElementById('wonSets').value = '';
+    document.getElementById('place').value = '1';
+    const resultElement = document.getElementById('result');
+    resultElement.classList.remove('visible');
+    document.getElementById('error').innerText = '';
+    document.getElementById('wins').classList.remove('invalid');
+    document.getElementById('losses').classList.remove('invalid');
+    document.getElementById('wonSets').classList.remove('invalid');
+    calculatePrize();
+  }
+
+  document.getElementById('resetButton').addEventListener('click', resetForm);
+  // ... остальной код без изменений ...
 }
 console.log('Adding reset listener');
   document.getElementById('resetButton').addEventListener('click', resetForm);
