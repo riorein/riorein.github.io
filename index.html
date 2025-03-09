@@ -100,10 +100,93 @@
       font-size: 0.9rem;
       color: #777777;
     }
+	/* Новые стили для тем */
+  :root {
+    --bg-color: #121212;
+    --container-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --input-bg: #2d2d2d;
+    --button-bg: #3498db;
+    --button-hover: #2980b9;
+    --result-color: #27ae60;
+    --error-color: #e74c3c;
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  .container {
+    background-color: var(--container-bg);
+  }
+
+  input, select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+  }
+
+  button {
+    background-color: var(--button-bg);
+  }
+
+  button:hover {
+    background-color: var(--button-hover);
+  }
+
+  .result {
+    color: var(--result-color);
+    /* Анимация для результата */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .result.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .error {
+    color: var(--error-color);
+  }
+
+  /* Пульсация при фокусе */
+  input:focus, select:focus {
+    animation: pulse 0.5s ease;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
+    }
+  }
+
+  /* Плавное очищение полей */
+  input, select {
+    transition: all 0.3s ease;
+  }
+
+  /* Светлая тема */
+  body.light {
+    --bg-color: #f0f0f0;
+    --container-bg: #ffffff;
+    --text-color: #333333;
+    --input-bg: #e0e0e0;
+    --button-bg: #3498db;
+    --button-hover: #2980b9;
+    --result-color: #27ae60;
+    --error-color: #e74c3c;
+  }
   </style>
 </head>
 <body>
   <div class="container">
+  <button id="themeToggle">Светлая тема</button>
+  <button id="langToggle">EN</button>
     <h1>Калькулятор призовых</h1>
     <label for="league">Выберите лигу:</label>
     <select id="league">

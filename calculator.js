@@ -75,7 +75,11 @@ export function calculatePrize() {
     const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
     const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
 
-    document.getElementById('result').innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+    // Обновление с анимацией
+    const resultElement = document.getElementById('result');
+    resultElement.innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+    resultElement.classList.remove('visible'); // Сбрасываем, чтобы анимация сработала заново
+    setTimeout(() => resultElement.classList.add('visible'), 10); // Добавляем с небольшой задержкой
   } else {
     document.getElementById('error').innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
   }
