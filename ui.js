@@ -13,20 +13,22 @@ export function initUI() {
   });
 
   // Функция сброса формы
-  function resetForm() {
-    console.log('Reset button clicked');
-    document.getElementById('league').value = 'super';
-    document.getElementById('wins').value = '';
-    document.getElementById('losses').value = '';
-    document.getElementById('wonSets').value = '';
-    document.getElementById('place').value = '1';
-    const resultElement = document.getElementById('result');
-    resultElement.classList.remove('visible');
-    document.getElementById('error').innerText = '';
-    document.getElementById('wins').classList.remove('invalid');
-    document.getElementById('losses').classList.remove('invalid');
-    document.getElementById('wonSets').classList.remove('invalid');
-  }
+ function resetForm() {
+  console.log('Reset button clicked');
+  document.getElementById('league').value = 'super';
+  document.getElementById('wins').value = '';
+  document.getElementById('losses').value = '';
+  document.getElementById('wonSets').value = '';
+  document.getElementById('place').value = '1';
+  const resultElement = document.getElementById('result');
+  resultElement.classList.remove('visible');
+  document.getElementById('error').innerText = '';
+  document.getElementById('wins').classList.remove('invalid');
+  document.getElementById('losses').classList.remove('invalid');
+  document.getElementById('wonSets').classList.remove('invalid');
+  // Принудительно вызываем пересчёт
+  calculatePrize();
+}
 console.log('Adding reset listener');
   document.getElementById('resetButton').addEventListener('click', resetForm);
 }
