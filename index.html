@@ -476,6 +476,181 @@
       opacity: 0;
     }
   }
+
+  /* Стили для истории расчетов */
+  .history-container {
+    background-color: var(--container-bg);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    margin: 20px auto;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .history-container h2 {
+    color: var(--text-color);
+    margin-bottom: 20px;
+  }
+  
+  .history-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+  
+  .history-filters label {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  .history-filters input,
+  .history-filters select {
+    padding: 8px;
+    border-radius: 5px;
+    margin-right: 15px;
+  }
+  
+  .clear-history-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto;
+  }
+  
+  .clear-history-button:hover {
+    background-color: #c0392b;
+  }
+  
+  .history-empty {
+    color: #777;
+    padding: 20px;
+    font-style: italic;
+  }
+  
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    color: var(--text-color);
+  }
+  
+  .history-table th,
+  .history-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+  }
+  
+  .history-table th {
+    font-weight: bold;
+    color: #3498db;
+    position: sticky;
+    top: 0;
+    background-color: var(--container-bg);
+    z-index: 1;
+  }
+  
+  .history-table tr {
+    transition: background-color 0.3s;
+    cursor: pointer;
+  }
+  
+  .history-table tr:hover {
+    background-color: rgba(52, 152, 219, 0.1);
+  }
+  
+  .toggle-history-button {
+    display: block;
+    margin: 20px auto 10px;
+    background-color: #7f8c8d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .toggle-history-button:hover {
+    background-color: #95a5a6;
+  }
+  
+  /* Адаптивность для истории */
+  @media (max-width: 768px) {
+    .history-container {
+      padding: 1rem;
+    }
+    
+    .history-filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .history-filters input,
+    .history-filters select {
+      margin-bottom: 10px;
+      width: 100%;
+    }
+    
+    .history-table th,
+    .history-table td {
+      padding: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .history-table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+    .clear-history-button {
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+  
+  /* Анимация для истории */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Эффект ряби для историй */
+  .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.4);
+    width: 100px;
+    height: 100px;
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+  }
+  
+  @keyframes ripple {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
   </style>
 </head>
 <body>

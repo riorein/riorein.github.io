@@ -57,6 +57,11 @@ export function calculatePrize() {
   lossesEl.classList.remove('invalid');
   wonSetsEl.classList.remove('invalid');
 
+  // Если поля пустые, не выводим ни ошибку, ни результат
+  if (winsEl.value === '' && lossesEl.value === '' && wonSetsEl.value === '') {
+    return;
+  }
+  
   if (wins === 0 && losses === 0 && wonSets === 0) {
     showError("Ошибка: введите данные для расчета.");
     return;
