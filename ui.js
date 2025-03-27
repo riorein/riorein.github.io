@@ -66,7 +66,14 @@ export function initUI() {
 
   // Обработчик для кнопки расчета
   document.getElementById('calculateButton').addEventListener('click', () => {
-    calculatePrize();
+    console.log('Расчет начат...');
+    try {
+      calculatePrize();
+      console.log('Расчет успешно завершен');
+    } catch (error) {
+      console.error('Ошибка при расчете:', error);
+      document.getElementById('error').innerText = "Произошла ошибка при расчете. Попробуйте обновить страницу.";
+    }
   });
 
   if ('serviceWorker' in navigator) {

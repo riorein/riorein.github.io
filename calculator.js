@@ -1,49 +1,72 @@
 export function calculatePrize() {
-  const league = document.getElementById('league').value;
-  const wins = parseInt(document.getElementById('wins').value) || 0;
-  const losses = parseInt(document.getElementById('losses').value) || 0;
-  const wonSets = parseInt(document.getElementById('wonSets').value) || 0;
-  const place = document.getElementById('place').value;
+  console.log('Функция calculatePrize вызвана');
+  
+  // Проверяем существование элементов
+  const leagueEl = document.getElementById('league');
+  const winsEl = document.getElementById('wins');
+  const lossesEl = document.getElementById('losses');
+  const wonSetsEl = document.getElementById('wonSets');
+  const placeEl = document.getElementById('place');
+  const resultEl = document.getElementById('result');
+  const errorEl = document.getElementById('error');
+  
+  if (!leagueEl || !winsEl || !lossesEl || !wonSetsEl || !placeEl || !resultEl || !errorEl) {
+    console.error('Не все DOM элементы найдены', {
+      league: !!leagueEl,
+      wins: !!winsEl,
+      losses: !!lossesEl,
+      wonSets: !!wonSetsEl,
+      place: !!placeEl,
+      result: !!resultEl,
+      error: !!errorEl
+    });
+    return;
+  }
+  
+  const league = leagueEl.value;
+  const wins = parseInt(winsEl.value) || 0;
+  const losses = parseInt(lossesEl.value) || 0;
+  const wonSets = parseInt(wonSetsEl.value) || 0;
+  const place = placeEl.value;
+  
+  console.log('Данные для расчета:', { league, wins, losses, wonSets, place });
 
-  const winsInput = document.getElementById('wins');
-  const lossesInput = document.getElementById('losses');
-  const wonSetsInput = document.getElementById('wonSets');
-
-  document.getElementById('error').innerText = "";
-  document.getElementById('result').innerText = "";
-  winsInput.classList.remove('invalid');
-  lossesInput.classList.remove('invalid');
-  wonSetsInput.classList.remove('invalid');
+  // Очищаем предыдущие сообщения
+  errorEl.innerText = "";
+  resultEl.innerText = "";
+  winsEl.classList.remove('invalid');
+  lossesEl.classList.remove('invalid');
+  wonSetsEl.classList.remove('invalid');
 
   if (wins === 0 && losses === 0 && wonSets === 0) {
-    document.getElementById('error').innerText = "Ошибка: введите данные для расчета.";
+    errorEl.innerText = "Ошибка: введите данные для расчета.";
     return;
   }
 
   if (wins === 5 && (place === "2" || place === "3" || place === "4")) {
-    document.getElementById('error').innerText = "Ошибка: при 5 победах нельзя занять 2, 3 или 4 место.";
-    winsInput.classList.add('invalid');
+    errorEl.innerText = "Ошибка: при 5 победах нельзя занять 2, 3 или 4 место.";
+    winsEl.classList.add('invalid');
     return;
   }
 
   if (losses === 5 && (place === "1" || place === "2" || place === "3")) {
-    document.getElementById('error').innerText = "Ошибка: при 5 поражениях нельзя занять 1, 2 или 3 место.";
-    lossesInput.classList.add('invalid');
+    errorEl.innerText = "Ошибка: при 5 поражениях нельзя занять 1, 2 или 3 место.";
+    lossesEl.classList.add('invalid');
     return;
   }
 
   if (wins > 0 || losses === 5) {
     if (wins + losses > 5) {
-      document.getElementById('error').innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
-      winsInput.classList.add('invalid');
-      lossesInput.classList.add('invalid');
+      errorEl.innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
+      winsEl.classList.add('invalid');
+      lossesEl.classList.add('invalid');
       return;
     }
 
     const maxWonSets = losses * 3;
     if (wonSets > maxWonSets) {
-      document.getElementById('error').innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
-      wonSetsInput.classList.add('invalid');
+      errorEl.innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
+      wonSetsEl.classList.add('invalid');
       return;
     }
 
@@ -63,12 +86,17 @@ export function calculatePrize() {
     const participationPrize = league === 'super' ? leagueRates[league].participation : 0;
     const totalPrize = winPrize + lossPrize + wonSetsPrize + placePrize + participationPrize;
 
-    const resultElement = document.getElementById('result');
-    resultElement.innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
-    resultElement.classList.remove('visible');
-    resultElement.offsetHeight;
-    resultElement.classList.add('visible');
+    console.log('Расчет призовых:', {
+      winPrize, lossPrize, wonSetsPrize, placePrize, participationPrize, totalPrize
+    });
+
+    // Устанавливаем результат напрямую
+    resultEl.style.opacity = "1";
+    resultEl.style.transform = "translateY(0)";
+    resultEl.innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+    console.log('Результат установлен:', resultEl.innerText);
   } else {
-    document.getElementById('error').innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
+    errorEl.innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
+    console.log('Выведена ошибка:', errorEl.innerText);
   }
 }

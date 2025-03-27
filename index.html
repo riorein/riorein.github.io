@@ -82,10 +82,17 @@
     }
 
     .result {
+      color: var(--result-color);
       margin-top: 1.5rem;
       font-size: 1.2rem;
       font-weight: bold;
-      color: #27ae60;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .result.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .error {
@@ -132,19 +139,6 @@
 
   button:hover {
     background-color: var(--button-hover);
-  }
-
-  .result {
-    color: var(--result-color);
-    /* Анимация для результата */
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-
-  .result.visible {
-    opacity: 1;
-    transform: translateY(0);
   }
 
   .error {
@@ -216,7 +210,7 @@
     <button id="calculateButton" style="margin-bottom: 10px;">Рассчитать</button>
     <button id="resetButton">Сбросить</button>
 
-    <div class="result" id="result"></div>
+    <div class="result" id="result" style="opacity: 1; transform: translateY(0);"></div>
     <div class="error" id="error"></div>
 
     <div class="footer">
@@ -226,7 +220,30 @@
 
   <script type="module">
     import { initUI } from './ui.js';
-    initUI(); // Инициализация интерфейса
+    import { calculatePrize } from './calculator.js';
+    
+    // Дождемся полной загрузки страницы
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOMContentLoaded событие запущено');
+      
+      // Инициализация UI
+      initUI();
+      
+      // Добавляем дополнительный обработчик напрямую для кнопки расчета
+      document.getElementById('calculateButton').addEventListener('click', function() {
+        console.log('Кнопка расчета нажата напрямую');
+        calculatePrize();
+      });
+      
+      // Для отладки, выведем содержимое всех полей ввода
+      console.log('Значения полей:', {
+        league: document.getElementById('league').value,
+        wins: document.getElementById('wins').value,
+        losses: document.getElementById('losses').value,
+        wonSets: document.getElementById('wonSets').value,
+        place: document.getElementById('place').value
+      });
+    });
   </script>
 </body>
 </html>
