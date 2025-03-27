@@ -114,8 +114,11 @@ export function calculatePrize() {
       winPrize, lossPrize, wonSetsPrize, placePrize, participationPrize, totalPrize
     });
 
+    // Формируем результат
+    const resultText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+    
     // Используем функцию showResult для анимированного отображения
-    showResult(`Ваши призовые: ${totalPrize.toFixed(2)} рублей`);
+    showResult(resultText, { league, wins, losses, wonSets, place });
     
     // Добавляем класс visible для анимации
     setTimeout(() => {

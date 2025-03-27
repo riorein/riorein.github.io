@@ -3,15 +3,15 @@ import { calculatePrize } from './calculator.js';
 
 // Тексты интерфейса
 const translations = {
-  title: 'Калькулятор призовых',
-  leagueLabel: 'Выберите лигу:',
-  winsLabel: 'Количество побед:',
-  lossesLabel: 'Количество поражений:',
-  wonSetsLabel: 'Выигранные партии в поражениях:',
-  placeLabel: 'Занятое место:',
-  resetButton: 'Сбросить',
-  footer: 'Рассчитайте ваши призовые за турнир по настольному теннису!',
-  themeToggle: { light: 'Светлая тема', dark: 'Тёмная тема' },
+    title: 'Калькулятор призовых',
+    leagueLabel: 'Выберите лигу:',
+    winsLabel: 'Количество побед:',
+    lossesLabel: 'Количество поражений:',
+    wonSetsLabel: 'Выигранные партии в поражениях:',
+    placeLabel: 'Занятое место:',
+    resetButton: 'Сбросить',
+    footer: 'Рассчитайте ваши призовые за турнир по настольному теннису!',
+    themeToggle: { light: 'Светлая тема', dark: 'Тёмная тема' },
   history: {
     title: 'История расчетов',
     filterDate: 'Фильтр по дате:',
@@ -477,7 +477,7 @@ function addRippleEffect() {
 }
 
 // Плавная анимация результата
-export function showResult(text) {
+export function showResult(text, data) {
   const resultElement = document.getElementById('result');
   
   // Сначала скрываем результат
@@ -492,17 +492,10 @@ export function showResult(text) {
     resultElement.classList.add('visible');
   });
   
-  // Сохраняем результат в истории
-  const league = document.getElementById('league').value;
-  const wins = parseInt(document.getElementById('wins').value) || 0;
-  const losses = parseInt(document.getElementById('losses').value) || 0;
-  const wonSets = parseInt(document.getElementById('wonSets').value) || 0;
-  const place = document.getElementById('place').value;
-  
-  addToHistory(
-    { league, wins, losses, wonSets, place },
-    text
-  );
+  // Сохраняем результат в истории, если переданы данные
+  if (data) {
+    addToHistory(data, text);
+  }
 }
 
 // Настройка кнопки переключения темы
