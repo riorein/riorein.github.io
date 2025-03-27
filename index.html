@@ -234,20 +234,23 @@
     --error-color: #e74c3c;
   }
 
-  /* Адаптация для мобильных устройств */
+  /* Улучшенная адаптация для мобильных устройств */
   @media (max-width: 600px) {
     body {
       padding: 10px;
       height: auto;
-      min-height: 100vh; /* Резервный вариант */
-      min-height: calc(var(--vh, 1vh) * 100); /* Использование --vh переменной */
+      min-height: 100vh;
+      min-height: calc(var(--vh, 1vh) * 100);
+      display: block; /* Изменяем с flex на block для лучшего скроллинга */
+      overflow-x: hidden;
     }
     
     .container {
-      padding: 1.5rem;
+      padding: 1.2rem;
       max-width: 100%;
-      margin: 10px;
+      margin: 10px auto;
       box-sizing: border-box;
+      border-radius: 8px;
     }
     
     h1 {
@@ -256,32 +259,143 @@
     }
     
     select, input, button {
-      padding: 0.6rem;
+      padding: 0.8rem;
       font-size: 1rem;
       margin-bottom: 0.8rem;
+      border-radius: 8px;
+    }
+    
+    /* Увеличиваем размер кнопок для удобного нажатия на телефоне */
+    button {
+      min-height: 48px;
     }
     
     label {
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
     }
     
-    /* Кнопки темы и языка в ряд */
+    /* Кнопки темы и операций в ряд */
     .button-row {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 15px;
     }
     
     .button-row button {
       flex: 1;
     }
+    
+    /* Результат и уведомления */
+    .result {
+      font-size: 1.25rem;
+      padding: 0.5rem;
+    }
+    
+    .error {
+      font-size: 0.95rem;
+    }
+    
+    /* Адаптация истории расчетов */
+    .history-container {
+      padding: 1.2rem;
+      margin: 10px auto;
+      border-radius: 8px;
+    }
+    
+    .history-container h2 {
+      font-size: 1.5rem;
+    }
+    
+    .history-filters {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 12px;
+      gap: 10px;
+    }
+    
+    .history-filters input,
+    .history-filters select {
+      width: 100%;
+      padding: 12px;
+      margin: 4px 0;
+      height: 48px; /* Более удобный размер для нажатия */
+    }
+    
+    .clear-history-button {
+      width: 100%;
+      padding: 12px;
+      height: 48px;
+      margin-top: 5px;
+    }
+    
+    /* Карточки в одну колонку с большими отступами */
+    .history-cards {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    
+    .history-card {
+      padding: 16px;
+      margin-bottom: 5px;
+    }
+    
+    /* Больший размер кнопки удаления для удобства */
+    .delete-item-button {
+      width: 36px;
+      height: 36px;
+      top: 8px;
+      right: 8px;
+    }
+    
+    .delete-item-button svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .card-result {
+      font-size: 1.3rem;
+      word-wrap: break-word;
+    }
+    
+    .card-details {
+      font-size: 0.9rem;
+    }
+    
+    /* Кнопки переключения и сохранения истории */
+    .toggle-history-button,
+    .save-history-button {
+      width: 100%;
+      padding: 14px 20px;
+      height: 48px;
+      margin: 10px auto;
+      font-size: 1rem;
+    }
+    
+    /* Уведомления для мобильных */
+    .notification-container {
+      top: auto;
+      left: 10px;
+      right: 10px;
+      bottom: 20px;
+      width: auto;
+    }
+    
+    .notification {
+      padding: 14px;
+      text-align: center;
+      width: 100%;
+      max-width: none;
+      backdrop-filter: blur(3px);
+    }
   }
   
-  /* Для очень малых экранов */
+  /* Для очень маленьких экранов */
   @media (max-width: 350px) {
     .container {
       padding: 1rem;
+      margin: 5px auto;
     }
     
     h1 {
@@ -289,41 +403,45 @@
     }
     
     select, input, button {
-      padding: 0.5rem;
-      font-size: 0.9rem;
+      padding: 0.7rem;
+      font-size: 0.95rem;
+    }
+    
+    .history-card {
+      padding: 12px;
+    }
+    
+    .card-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .card-date, .card-league {
+      margin-bottom: 5px;
     }
   }
   
-  /* Ландшафтная ориентация на мобильных */
-  @media (max-height: 500px) and (orientation: landscape) {
+  /* Лучшая поддержка отображения страницы от верха до низа */
+  @media (min-height: 780px) and (max-width: 600px) {
     body {
-      height: auto;
-      padding: 10px 0;
-    }
-    
-    .container {
-      padding: 1rem;
-      margin: 0 auto;
-    }
-    
-    h1 {
-      margin-top: 0;
-      margin-bottom: 0.5rem;
-      font-size: 1.2rem;
-    }
-    
-    .footer {
-      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-top: 20px;
     }
   }
   
-  /* Исправление для устройств с "челкой" (iPhone X и новее) */
+  /* Fix для iPhone с "челкой" */
   @supports (padding: max(0px)) {
     body {
-      padding-left: max(0px, env(safe-area-inset-left));
-      padding-right: max(0px, env(safe-area-inset-right));
-      padding-top: max(0px, env(safe-area-inset-top));
-      padding-bottom: max(0px, env(safe-area-inset-bottom));
+      padding-left: max(10px, env(safe-area-inset-left));
+      padding-right: max(10px, env(safe-area-inset-right));
+      padding-top: max(10px, env(safe-area-inset-top));
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+    
+    .notification-container {
+      bottom: max(20px, env(safe-area-inset-bottom));
     }
   }
 
