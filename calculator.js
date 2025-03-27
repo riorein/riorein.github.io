@@ -1,3 +1,22 @@
+import { showResult } from './ui.js';
+
+function showError(message) {
+  const errorEl = document.getElementById('error');
+  
+  // Скрываем старую ошибку
+  errorEl.style.opacity = '0';
+  errorEl.style.transform = 'translateY(10px)';
+  
+  // Устанавливаем новый текст
+  errorEl.innerText = message;
+  
+  // Показываем с анимацией
+  requestAnimationFrame(() => {
+    errorEl.style.opacity = '1';
+    errorEl.style.transform = 'translateY(0)';
+  });
+}
+
 export function calculatePrize() {
   console.log('Функция calculatePrize вызвана');
   
@@ -39,25 +58,25 @@ export function calculatePrize() {
   wonSetsEl.classList.remove('invalid');
 
   if (wins === 0 && losses === 0 && wonSets === 0) {
-    errorEl.innerText = "Ошибка: введите данные для расчета.";
+    showError("Ошибка: введите данные для расчета.");
     return;
   }
 
   if (wins === 5 && (place === "2" || place === "3" || place === "4")) {
-    errorEl.innerText = "Ошибка: при 5 победах нельзя занять 2, 3 или 4 место.";
+    showError("Ошибка: при 5 победах нельзя занять 2, 3 или 4 место.");
     winsEl.classList.add('invalid');
     return;
   }
 
   if (losses === 5 && (place === "1" || place === "2" || place === "3")) {
-    errorEl.innerText = "Ошибка: при 5 поражениях нельзя занять 1, 2 или 3 место.";
+    showError("Ошибка: при 5 поражениях нельзя занять 1, 2 или 3 место.");
     lossesEl.classList.add('invalid');
     return;
   }
 
   if (wins > 0 || losses === 5) {
     if (wins + losses > 5) {
-      errorEl.innerText = "Ошибка: за турнир можно сыграть не более 5 игр.";
+      showError("Ошибка: за турнир можно сыграть не более 5 игр.");
       winsEl.classList.add('invalid');
       lossesEl.classList.add('invalid');
       return;
@@ -65,7 +84,7 @@ export function calculatePrize() {
 
     const maxWonSets = losses * 3;
     if (wonSets > maxWonSets) {
-      errorEl.innerText = `Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`;
+      showError(`Ошибка: количество выигранных партий не может превышать ${maxWonSets} (3 партии за каждое поражение).`);
       wonSetsEl.classList.add('invalid');
       return;
     }
@@ -90,13 +109,17 @@ export function calculatePrize() {
       winPrize, lossPrize, wonSetsPrize, placePrize, participationPrize, totalPrize
     });
 
-    // Устанавливаем результат напрямую
-    resultEl.style.opacity = "1";
-    resultEl.style.transform = "translateY(0)";
-    resultEl.innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
+    // Используем функцию showResult для анимированного отображения
+    showResult(`Ваши призовые: ${totalPrize.toFixed(2)} рублей`);
+    
+    // Добавляем класс visible для анимации
+    setTimeout(() => {
+      resultEl.classList.add('visible');
+    }, 50);
+    
     console.log('Результат установлен:', resultEl.innerText);
   } else {
-    errorEl.innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
+    showError("Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.");
     console.log('Выведена ошибка:', errorEl.innerText);
   }
 }

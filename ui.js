@@ -111,10 +111,30 @@ export function initUI() {
   }
 
   function toggleTheme() {
+    // Добавляем класс для плавного перехода
+    document.body.classList.add('theme-transition');
+    
+    // Переключаем тему
     document.body.classList.toggle('light');
     const isLight = document.body.classList.contains('light');
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    document.getElementById('themeToggle').innerText = translations[currentLang].themeToggle[isLight ? 'dark' : 'light'];
+    
+    // Обновляем текст кнопки
+    document.getElementById('themeToggle').innerText = 
+      translations[currentLang].themeToggle[isLight ? 'dark' : 'light'];
+    
+    // Применяем анимацию для контейнера
+    const container = document.querySelector('.container');
+    container.style.transform = 'scale(0.98)';
+    
+    // Через небольшую задержку возвращаем в исходное состояние
+    setTimeout(() => {
+      container.style.transform = 'scale(1)';
+      // Убираем класс перехода после завершения анимации
+      setTimeout(() => {
+        document.body.classList.remove('theme-transition');
+      }, 500);
+    }, 50);
   }
 
   function updateLanguage(lang) {
@@ -133,9 +153,23 @@ export function initUI() {
   }
 
   function toggleLanguage() {
-    const newLang = currentLang === 'ru' ? 'en' : 'ru';
-    localStorage.setItem('lang', newLang);
-    updateLanguage(newLang);
+    // Сначала добавляем класс для анимации скрытия
+    const container = document.querySelector('.container');
+    container.style.opacity = '0.8';
+    container.style.transform = 'translateY(10px)';
+    
+    // Через небольшую задержку меняем язык и проявляем контент
+    setTimeout(() => {
+      const newLang = currentLang === 'ru' ? 'en' : 'ru';
+      localStorage.setItem('lang', newLang);
+      updateLanguage(newLang);
+      
+      // Возвращаем контейнер в исходное состояние с анимацией
+      requestAnimationFrame(() => {
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+      });
+    }, 150);
   }
 
   const savedTheme = localStorage.getItem('theme');
@@ -149,4 +183,51 @@ export function initUI() {
 
   updateLanguage(currentLang);
   document.getElementById('langToggle').addEventListener('click', toggleLanguage);
+
+  // Добавляем эффект волны для кнопок
+  addRippleEffect();
+  
+  // Обеспечиваем плавное появление контента при загрузке
+  document.querySelector('.container').style.opacity = '1';
+}
+
+// Улучшенный эффект нажатия кнопок с эффектом волны
+function addRippleEffect() {
+  const buttons = document.querySelectorAll('button');
+  
+  buttons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      const rect = button.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const circle = document.createElement('span');
+      circle.classList.add('ripple-effect');
+      circle.style.top = y + 'px';
+      circle.style.left = x + 'px';
+      
+      button.appendChild(circle);
+      
+      setTimeout(() => {
+        circle.remove();
+      }, 600);
+    });
+  });
+}
+
+// Плавная анимация результата
+export function showResult(text) {
+  const resultElement = document.getElementById('result');
+  
+  // Сначала скрываем результат
+  resultElement.style.opacity = '0';
+  resultElement.style.transform = 'translateY(20px)';
+  
+  // Устанавливаем текст
+  resultElement.innerText = text;
+  
+  // Затем показываем с анимацией
+  requestAnimationFrame(() => {
+    resultElement.classList.add('visible');
+  });
 }
