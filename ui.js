@@ -111,30 +111,38 @@ export function initUI() {
   }
 
   function toggleTheme() {
-    // Добавляем класс для плавного перехода
-    document.body.classList.add('theme-transition');
-    
-    // Переключаем тему
-    document.body.classList.toggle('light');
-    const isLight = document.body.classList.contains('light');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    
-    // Обновляем текст кнопки
-    document.getElementById('themeToggle').innerText = 
-      translations[currentLang].themeToggle[isLight ? 'dark' : 'light'];
-    
-    // Применяем анимацию для контейнера
-    const container = document.querySelector('.container');
-    container.style.transform = 'scale(0.98)';
-    
-    // Через небольшую задержку возвращаем в исходное состояние
-    setTimeout(() => {
-      container.style.transform = 'scale(1)';
-      // Убираем класс перехода после завершения анимации
+    console.log('Функция toggleTheme вызвана');
+    try {
+      // Добавляем класс для плавного перехода
+      document.body.classList.add('theme-transition');
+      
+      // Переключаем тему
+      document.body.classList.toggle('light');
+      const isLight = document.body.classList.contains('light');
+      console.log('Тема переключена на:', isLight ? 'светлую' : 'темную');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      
+      // Обновляем текст кнопки
+      const themeToggle = document.getElementById('themeToggle');
+      themeToggle.innerText = translations[currentLang].themeToggle[isLight ? 'dark' : 'light'];
+      console.log('Текст кнопки установлен:', themeToggle.innerText);
+      
+      // Применяем анимацию для контейнера
+      const container = document.querySelector('.container');
+      container.style.transform = 'scale(0.98)';
+      
+      // Через небольшую задержку возвращаем в исходное состояние
       setTimeout(() => {
-        document.body.classList.remove('theme-transition');
-      }, 500);
-    }, 50);
+        container.style.transform = 'scale(1)';
+        // Убираем класс перехода после завершения анимации
+        setTimeout(() => {
+          document.body.classList.remove('theme-transition');
+          console.log('Анимация перехода темы завершена');
+        }, 500);
+      }, 50);
+    } catch (error) {
+      console.error('Ошибка при переключении темы:', error);
+    }
   }
 
   function updateLanguage(lang) {
@@ -153,25 +161,33 @@ export function initUI() {
   }
 
   function toggleLanguage() {
-    // Сначала добавляем класс для анимации скрытия
-    const container = document.querySelector('.container');
-    container.style.opacity = '0.8';
-    container.style.transform = 'translateY(10px)';
-    
-    // Через небольшую задержку меняем язык и проявляем контент
-    setTimeout(() => {
-      const newLang = currentLang === 'ru' ? 'en' : 'ru';
-      localStorage.setItem('lang', newLang);
-      updateLanguage(newLang);
+    console.log('Функция toggleLanguage вызвана');
+    try {
+      // Сначала добавляем класс для анимации скрытия
+      const container = document.querySelector('.container');
+      container.style.opacity = '0.8';
+      container.style.transform = 'translateY(10px)';
       
-      // Возвращаем контейнер в исходное состояние с анимацией
-      requestAnimationFrame(() => {
-        container.style.opacity = '1';
-        container.style.transform = 'translateY(0)';
-      });
-    }, 150);
+      // Через небольшую задержку меняем язык и проявляем контент
+      setTimeout(() => {
+        const newLang = currentLang === 'ru' ? 'en' : 'ru';
+        console.log('Язык меняется с', currentLang, 'на', newLang);
+        localStorage.setItem('lang', newLang);
+        updateLanguage(newLang);
+        
+        // Возвращаем контейнер в исходное состояние с анимацией
+        requestAnimationFrame(() => {
+          container.style.opacity = '1';
+          container.style.transform = 'translateY(0)';
+          console.log('Анимация перехода языка завершена');
+        });
+      }, 150);
+    } catch (error) {
+      console.error('Ошибка при переключении языка:', error);
+    }
   }
 
+  // Инициализация темы и языка
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'light') {
     document.body.classList.add('light');
@@ -179,11 +195,13 @@ export function initUI() {
   } else {
     document.getElementById('themeToggle').innerText = translations[currentLang].themeToggle.light;
   }
-  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
+  
+  // Обновляем язык интерфейса
   updateLanguage(currentLang);
-  document.getElementById('langToggle').addEventListener('click', toggleLanguage);
-
+  
+  // Устанавливаем обработчики событий для кнопок
+  setupThemeAndLanguageButtons();
+  
   // Добавляем эффект волны для кнопок
   addRippleEffect();
   
@@ -230,4 +248,36 @@ export function showResult(text) {
   requestAnimationFrame(() => {
     resultElement.classList.add('visible');
   });
+}
+
+// Прямое назначение обработчиков событий для кнопок
+function setupThemeAndLanguageButtons() {
+  console.log('Устанавливаем обработчики для кнопок темы и языка');
+  
+  const themeButton = document.getElementById('themeToggle');
+  const langButton = document.getElementById('langToggle');
+  
+  if (themeButton) {
+    console.log('Найдена кнопка темы:', themeButton);
+    themeButton.onclick = function(e) {
+      console.log('Нажата кнопка темы');
+      toggleTheme();
+      e.preventDefault(); // Предотвращаем стандартное поведение
+      return false;
+    };
+  } else {
+    console.error('Не найдена кнопка переключения темы!');
+  }
+  
+  if (langButton) {
+    console.log('Найдена кнопка языка:', langButton);
+    langButton.onclick = function(e) {
+      console.log('Нажата кнопка языка');
+      toggleLanguage();
+      e.preventDefault(); // Предотвращаем стандартное поведение
+      return false;
+    };
+  } else {
+    console.error('Не найдена кнопка переключения языка!');
+  }
 }

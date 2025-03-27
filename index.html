@@ -476,189 +476,13 @@
       opacity: 0;
     }
   }
-
-  /* Фоновые элементы */
-  .background-elements {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
-    pointer-events: none;
-  }
-  
-  .bg-element {
-    position: absolute;
-    color: var(--text-color);
-  }
-  
-  body.light .bg-element {
-    color: #000;
-  }
-  
-  .racket-1 {
-    top: 10%;
-    right: 15%;
-    transform: rotate(45deg);
-    animation: float 20s ease-in-out infinite, rotation 40s linear infinite;
-  }
-  
-  .racket-2 {
-    bottom: 15%;
-    left: 10%;
-    transform: rotate(-30deg);
-    animation: float 25s ease-in-out infinite reverse, rotation 60s linear infinite reverse;
-  }
-  
-  .ball-1 {
-    top: 30%;
-    left: 20%;
-    animation: bounce 15s ease-in-out infinite;
-  }
-  
-  .ball-2 {
-    bottom: 25%;
-    right: 25%;
-    animation: bounce 12s ease-in-out infinite 2s;
-  }
-  
-  .table {
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    transform-origin: center;
-    animation: tableFloat 15s ease-in-out infinite;
-  }
-  
-  @keyframes float {
-    0%, 100% {
-      transform: translate(0, 0) rotate(45deg);
-    }
-    25% {
-      transform: translate(-15px, 15px) rotate(40deg);
-    }
-    50% {
-      transform: translate(10px, 25px) rotate(50deg);
-    }
-    75% {
-      transform: translate(15px, 10px) rotate(42deg);
-    }
-  }
-  
-  @keyframes rotation {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-  @keyframes bounce {
-    0%, 100% {
-      transform: translate(0, 0);
-    }
-    25% {
-      transform: translate(30px, 20px);
-    }
-    50% {
-      transform: translate(10px, 40px);
-    }
-    75% {
-      transform: translate(-20px, 15px);
-    }
-  }
-  
-  @keyframes tableFloat {
-    0%, 100% {
-      transform: translateX(-50%) rotate(0deg);
-    }
-    50% {
-      transform: translateX(-50%) rotate(1deg);
-    }
-  }
-  
-  /* Адаптация фоновых элементов для мобильных устройств */
-  @media (max-width: 600px) {
-    .racket-1 {
-      top: 5%;
-      right: 5%;
-      width: 60px;
-      height: 60px;
-    }
-    
-    .racket-2 {
-      bottom: 10%;
-      left: 5%;
-      width: 50px;
-      height: 50px;
-    }
-    
-    .table {
-      bottom: 5%;
-      width: 150px;
-      height: 75px;
-    }
-  }
-  
-  /* Дополнительные улучшения для контейнера */
-  .container {
-    background-color: var(--container-bg);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-    animation: fadeIn 0.5s ease-out;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    backdrop-filter: blur(5px);
-  }
-  
-  /* Светлая тема для фона */
-  body.light .background-elements {
-    opacity: 0.7;
-  }
   </style>
 </head>
 <body>
-  <!-- SVG элементы для фона -->
-  <div class="background-elements">
-    <!-- Ракетки и мячи для тенниса -->
-    <svg class="bg-element racket-1" width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M30 15C30 7.5 35 2 45 2C55 2 60 10 60 20C60 35 45 50 30 65L20 55C35 40 50 25 50 15C50 10 47.5 7.5 45 7.5C42.5 7.5 40 10 40 15C40 20 35 25 30 30L25 25C25 25 30 20 30 15Z" fill="currentColor" opacity="0.1"/>
-      <path d="M15 75L25 65L30 70L20 80L15 75Z" fill="currentColor" opacity="0.2"/>
-    </svg>
-    
-    <svg class="bg-element racket-2" width="70" height="70" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M30 15C30 7.5 35 2 45 2C55 2 60 10 60 20C60 35 45 50 30 65L20 55C35 40 50 25 50 15C50 10 47.5 7.5 45 7.5C42.5 7.5 40 10 40 15C40 20 35 25 30 30L25 25C25 25 30 20 30 15Z" fill="currentColor" opacity="0.1"/>
-      <path d="M15 75L25 65L30 70L20 80L15 75Z" fill="currentColor" opacity="0.2"/>
-    </svg>
-    
-    <svg class="bg-element ball-1" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="9" fill="currentColor" opacity="0.1"/>
-      <path d="M14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6C12.2091 6 14 7.79086 14 10Z" fill="currentColor" opacity="0.1"/>
-    </svg>
-    
-    <svg class="bg-element ball-2" width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="10" cy="10" r="9" fill="currentColor" opacity="0.1"/>
-      <path d="M14 10C14 12.2091 12.2091 14 10 14C7.79086 14 6 12.2091 6 10C6 7.79086 7.79086 6 10 6C12.2091 6 14 7.79086 14 10Z" fill="currentColor" opacity="0.1"/>
-    </svg>
-    
-    <svg class="bg-element table" width="200" height="100" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="5" y="30" width="190" height="60" rx="2" fill="currentColor" opacity="0.05"/>
-      <line x1="100" y1="30" x2="100" y2="90" stroke="currentColor" stroke-width="2" opacity="0.1"/>
-    </svg>
-  </div>
-  
   <div class="container">
     <div class="button-row">
-      <button id="themeToggle" aria-label="Переключить тему">Светлая тема</button>
-      <button id="langToggle">EN</button>
+      <button id="themeToggle" aria-label="Переключить тему" type="button">Светлая тема</button>
+      <button id="langToggle" aria-label="Переключить язык" type="button">EN</button>
     </div>
     <h1>Калькулятор призовых</h1>
     <label for="league">Выберите лигу:</label>
@@ -707,14 +531,48 @@
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOMContentLoaded событие запущено');
       
+      // Проверяем, существуют ли кнопки переключения
+      const themeToggle = document.getElementById('themeToggle');
+      const langToggle = document.getElementById('langToggle');
+      
+      console.log('Кнопка темы:', themeToggle ? 'найдена' : 'не найдена');
+      console.log('Кнопка языка:', langToggle ? 'найдена' : 'не найдена');
+      
       // Инициализация UI
       initUI();
+      
+      // Проверяем, подключились ли обработчики
+      console.log('Проверка обработчиков событий для кнопок:');
+      if (themeToggle) {
+        console.log('Есть ли обработчик клика для кнопки темы:', !!themeToggle.onclick);
+      }
+      if (langToggle) {
+        console.log('Есть ли обработчик клика для кнопки языка:', !!langToggle.onclick);
+      }
       
       // Добавляем дополнительный обработчик напрямую для кнопки расчета
       document.getElementById('calculateButton').addEventListener('click', function() {
         console.log('Кнопка расчета нажата напрямую');
         calculatePrize();
       });
+      
+      // Добавляем резервные обработчики для кнопок темы и языка
+      if (themeToggle && !themeToggle.onclick) {
+        console.log('Добавляем резервный обработчик для кнопки темы');
+        themeToggle.addEventListener('click', function() {
+          console.log('Запасной обработчик для кнопки темы');
+          document.body.classList.toggle('light');
+        });
+      }
+      
+      if (langToggle && !langToggle.onclick) {
+        console.log('Добавляем резервный обработчик для кнопки языка');
+        langToggle.addEventListener('click', function() {
+          console.log('Запасной обработчик для кнопки языка');
+          const currentLang = document.documentElement.lang;
+          document.documentElement.lang = currentLang === 'ru' ? 'en' : 'ru';
+        });
+      }
       
       // Для отладки, выведем содержимое всех полей ввода
       console.log('Значения полей:', {
