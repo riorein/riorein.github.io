@@ -66,7 +66,8 @@ export function calculatePrize() {
     const resultElement = document.getElementById('result');
     resultElement.innerText = `Ваши призовые: ${totalPrize.toFixed(2)} рублей`;
     resultElement.classList.remove('visible');
-    setTimeout(() => resultElement.classList.add('visible'), 10);
+    resultElement.offsetHeight;
+    resultElement.classList.add('visible');
   } else {
     document.getElementById('error').innerText = "Ошибка: для расчета должна быть хотя бы одна победа или 5 поражений.";
   }

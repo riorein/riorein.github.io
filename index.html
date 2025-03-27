@@ -185,11 +185,11 @@
 </head>
 <body>
   <div class="container">
-  <button id="themeToggle">Светлая тема</button>
+  <button id="themeToggle" aria-label="Переключить тему">Светлая тема</button>
   <button id="langToggle">EN</button>
     <h1>Калькулятор призовых</h1>
     <label for="league">Выберите лигу:</label>
-    <select id="league">
+    <select id="league" aria-label="Выберите лигу">
       <option value="super">Супер лига</option>
       <option value="a">А лига</option>
       <option value="b">Б лига</option>
@@ -213,6 +213,7 @@
       <option value="4">4 место</option>
     </select>
 
+    <button id="calculateButton" style="margin-bottom: 10px;">Рассчитать</button>
     <button id="resetButton">Сбросить</button>
 
     <div class="result" id="result"></div>

@@ -32,9 +32,17 @@ const translations = {
 let currentLang = localStorage.getItem('lang') || 'ru';
 
 export function initUI() {
-  document.querySelectorAll('input, select').forEach(element => {
+  // Обработчики для input элементов
+  document.querySelectorAll('input').forEach(element => {
     element.addEventListener('input', () => {
-      if (element.tagName === 'INPUT') validateInput(element);
+      validateInput(element);
+      calculatePrize();
+    });
+  });
+
+  // Добавим отдельные обработчики для select
+  document.querySelectorAll('select').forEach(element => {
+    element.addEventListener('change', () => {
       calculatePrize();
     });
   });
@@ -55,6 +63,11 @@ export function initUI() {
   }
 
   document.getElementById('resetButton').addEventListener('click', resetForm);
+
+  // Обработчик для кнопки расчета
+  document.getElementById('calculateButton').addEventListener('click', () => {
+    calculatePrize();
+  });
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
