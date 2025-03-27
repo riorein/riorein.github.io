@@ -51,7 +51,7 @@ export function calculatePrize() {
       super: { win: 1800, loss: 400, wonSet: 300, participation: 500 },
       a: { win: 1500, loss: 400, wonSet: 200 },
       b: { win: 1100, loss: 200, wonSet: 150 },
-      c: { win: 900, loss: 100, wonSet: 100 }
+      c: { win: 800, loss: 100, wonSet: 100 }
     };
 
     const placePrizes = { 1: 1000, 2: 600, 3: 400, 4: 0 };
