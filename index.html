@@ -2,7 +2,9 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#121212">
+  <meta name="description" content="Калькулятор призовых для турниров по настольному теннису">
   <title>Калькулятор призовых</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="icon.png">
@@ -17,6 +19,7 @@
       align-items: center;
       height: 100vh;
       color: #e0e0e0;
+      -webkit-tap-highlight-color: rgba(0,0,0,0); /* Убирает синее выделение при тапе на iOS */
     }
 
     .container {
@@ -40,6 +43,7 @@
       margin-bottom: 0.5rem;
       font-weight: bold;
       color: #bbbbbb;
+      padding: 5px 0;
     }
 
     select, input {
@@ -52,6 +56,10 @@
       box-sizing: border-box;
       background-color: #2d2d2d;
       color: #e0e0e0;
+      touch-action: manipulation;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
     }
 
     select:focus, input:focus {
@@ -75,10 +83,16 @@
       font-size: 1rem;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      touch-action: manipulation;
     }
 
     button:hover {
       background-color: #2980b9;
+    }
+
+    button:active {
+      background-color: #2573a7; /* Отклик на нажатие */
+      transform: translateY(1px); /* Небольшая анимация нажатия */
     }
 
     .result {
@@ -175,12 +189,107 @@
     --result-color: #27ae60;
     --error-color: #e74c3c;
   }
+
+  /* Адаптация для мобильных устройств */
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+      height: auto;
+      min-height: 100vh; /* Резервный вариант */
+      min-height: calc(var(--vh, 1vh) * 100); /* Использование --vh переменной */
+    }
+    
+    .container {
+      padding: 1.5rem;
+      max-width: 100%;
+      margin: 10px;
+      box-sizing: border-box;
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    select, input, button {
+      padding: 0.6rem;
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+    }
+    
+    label {
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    /* Кнопки темы и языка в ряд */
+    .button-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .button-row button {
+      flex: 1;
+    }
+  }
+  
+  /* Для очень малых экранов */
+  @media (max-width: 350px) {
+    .container {
+      padding: 1rem;
+    }
+    
+    h1 {
+      font-size: 1.3rem;
+    }
+    
+    select, input, button {
+      padding: 0.5rem;
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Ландшафтная ориентация на мобильных */
+  @media (max-height: 500px) and (orientation: landscape) {
+    body {
+      height: auto;
+      padding: 10px 0;
+    }
+    
+    .container {
+      padding: 1rem;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+    
+    .footer {
+      margin-top: 1rem;
+    }
+  }
+  
+  /* Исправление для устройств с "челкой" (iPhone X и новее) */
+  @supports (padding: max(0px)) {
+    body {
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-right: max(0px, env(safe-area-inset-right));
+      padding-top: max(0px, env(safe-area-inset-top));
+      padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
+  }
   </style>
 </head>
 <body>
   <div class="container">
-  <button id="themeToggle" aria-label="Переключить тему">Светлая тема</button>
-  <button id="langToggle">EN</button>
+    <div class="button-row">
+      <button id="themeToggle" aria-label="Переключить тему">Светлая тема</button>
+      <button id="langToggle">EN</button>
+    </div>
     <h1>Калькулятор призовых</h1>
     <label for="league">Выберите лигу:</label>
     <select id="league" aria-label="Выберите лигу">
@@ -191,13 +300,13 @@
     </select>
 
     <label for="wins">Количество побед:</label>
-    <input type="number" id="wins" placeholder="Введите количество побед" min="0" max="5">
+    <input type="number" id="wins" placeholder="Введите количество побед" min="0" max="5" inputmode="numeric" pattern="[0-5]">
 
     <label for="losses">Количество поражений:</label>
-    <input type="number" id="losses" placeholder="Введите количество поражений" min="0" max="5">
+    <input type="number" id="losses" placeholder="Введите количество поражений" min="0" max="5" inputmode="numeric" pattern="[0-5]">
 
     <label for="wonSets">Выигранные партии в поражениях:</label>
-    <input type="number" id="wonSets" placeholder="Введите количество выигранных партий" min="0">
+    <input type="number" id="wonSets" placeholder="Введите количество выигранных партий" min="0" inputmode="numeric">
 
     <label for="place">Занятое место:</label>
     <select id="place">
@@ -207,10 +316,12 @@
       <option value="4">4 место</option>
     </select>
 
-    <button id="calculateButton" style="margin-bottom: 10px;">Рассчитать</button>
-    <button id="resetButton">Сбросить</button>
+    <div class="button-row" style="margin-top: 15px;">
+      <button id="calculateButton">Рассчитать</button>
+      <button id="resetButton">Сбросить</button>
+    </div>
 
-    <div class="result" id="result" style="opacity: 1; transform: translateY(0);"></div>
+    <div class="result" id="result" style="opacity: 1; transform: translateY(0); margin-top: 20px;"></div>
     <div class="error" id="error"></div>
 
     <div class="footer">

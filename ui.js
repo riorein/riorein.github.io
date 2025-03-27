@@ -32,6 +32,34 @@ const translations = {
 let currentLang = localStorage.getItem('lang') || 'ru';
 
 export function initUI() {
+  // Определение мобильного устройства
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  console.log('Мобильное устройство:', isMobile);
+  
+  // Настройка для мобильных устройств
+  if (isMobile) {
+    // Обработчик изменения ориентации
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    
+    // Улучшаем отклик на сенсорных устройствах
+    document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('touchstart', () => {
+        button.style.opacity = '0.8';
+      }, { passive: true });
+      
+      button.addEventListener('touchend', () => {
+        button.style.opacity = '1';
+      }, { passive: true });
+    });
+  }
+  
+  function handleResize() {
+    // Подстраиваем высоту контейнера под экран
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+
   // Обработчики для input элементов
   document.querySelectorAll('input').forEach(element => {
     element.addEventListener('input', () => {
