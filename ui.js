@@ -24,7 +24,8 @@ const translations = {
     leagueLabel: 'Лига',
     resultLabel: 'Результат',
     detailsLabel: 'Детали',
-    saveToHistory: 'Сохранить в историю'
+    saveToHistory: 'Сохранить в историю',
+    deleteDay: 'Удалить все расчеты за этот день'
   }
 };
 
@@ -145,6 +146,37 @@ function clearHistory() {
   updateHistoryUI();
 }
 
+// Функция для удаления записей за определенную дату
+function deleteDayHistory(dateStr) {
+  // Преобразуем строку даты в объект Date и устанавливаем время на начало дня
+  const targetDate = new Date(dateStr);
+  targetDate.setHours(0, 0, 0, 0);
+  
+  // Фильтруем историю, оставляя только записи не из выбранного дня
+  calculationHistory = calculationHistory.filter(item => {
+    const itemDate = new Date(item.date.split(',')[0]);
+    itemDate.setHours(0, 0, 0, 0);
+    return itemDate.getTime() !== targetDate.getTime();
+  });
+  
+  saveHistory();
+  updateHistoryUI();
+  
+  // Показываем уведомление
+  showNotification(`Расчеты за ${dateStr} удалены`);
+}
+
+// Функция для получения уникальных дат из истории
+function getUniqueDates() {
+  const dates = calculationHistory.map(item => {
+    const datePart = item.date.split(',')[0];
+    return datePart.trim();
+  });
+  
+  // Возвращаем уникальные даты
+  return [...new Set(dates)].sort((a, b) => new Date(b) - new Date(a));
+}
+
 // Функция для отображения истории с фильтрами
 function updateHistoryUI() {
   const historyContainer = document.getElementById('historyContainer');
@@ -155,6 +187,9 @@ function updateHistoryUI() {
   
   const historyList = document.getElementById('historyList');
   historyList.innerHTML = '';
+  
+  // Обновляем список дней для удаления
+  updateDeleteDaySelector();
   
   // Применяем фильтры
   let filteredHistory = calculationHistory;
@@ -250,6 +285,50 @@ function updateHistoryUI() {
     
     table.appendChild(tbody);
     historyList.appendChild(table);
+  }
+}
+
+// Функция для обновления выпадающего списка дат для удаления
+function updateDeleteDaySelector() {
+  const deleteDaySelector = document.getElementById('deleteDaySelector');
+  if (!deleteDaySelector) return;
+  
+  // Сохраняем текущее выбранное значение
+  const currentValue = deleteDaySelector.value;
+  
+  // Очищаем список
+  deleteDaySelector.innerHTML = '';
+  
+  // Добавляем пустой пункт
+  const emptyOption = document.createElement('option');
+  emptyOption.value = '';
+  emptyOption.innerText = 'Выберите дату для удаления...';
+  deleteDaySelector.appendChild(emptyOption);
+  
+  // Получаем уникальные даты
+  const uniqueDates = getUniqueDates();
+  
+  // Если нет дат, делаем селектор неактивным
+  if (uniqueDates.length === 0) {
+    deleteDaySelector.disabled = true;
+    return;
+  }
+  
+  // Иначе добавляем опции и делаем активным
+  deleteDaySelector.disabled = false;
+  
+  uniqueDates.forEach(date => {
+    const option = document.createElement('option');
+    option.value = date;
+    option.innerText = date;
+    deleteDaySelector.appendChild(option);
+  });
+  
+  // Восстанавливаем выбранное значение, если оно есть в новом списке
+  if (currentValue && uniqueDates.includes(currentValue)) {
+    deleteDaySelector.value = currentValue;
+  } else {
+    deleteDaySelector.value = '';
   }
 }
 
@@ -358,6 +437,49 @@ function createHistoryUI() {
     filtersContainer.appendChild(clearButton);
     
     historyContainer.appendChild(filtersContainer);
+    
+    // Блок для удаления записей за определенный день
+    const deleteDayContainer = document.createElement('div');
+    deleteDayContainer.className = 'delete-day-container';
+    
+    // Селектор для выбора дня
+    const deleteDaySelector = document.createElement('select');
+    deleteDaySelector.id = 'deleteDaySelector';
+    deleteDaySelector.className = 'delete-day-selector';
+    
+    // Пустая опция по умолчанию
+    const emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.innerText = 'Выберите дату для удаления...';
+    deleteDaySelector.appendChild(emptyOption);
+    
+    // Кнопка удаления
+    const deleteDayButton = document.createElement('button');
+    deleteDayButton.innerText = translations.history.deleteDay;
+    deleteDayButton.className = 'delete-day-button';
+    deleteDayButton.disabled = true; // По умолчанию отключена
+    
+    // Активируем кнопку только когда выбрана дата
+    deleteDaySelector.addEventListener('change', () => {
+      deleteDayButton.disabled = !deleteDaySelector.value;
+    });
+    
+    // Обработчик удаления
+    deleteDayButton.addEventListener('click', () => {
+      const selectedDate = deleteDaySelector.value;
+      if (selectedDate) {
+        // Запрашиваем подтверждение
+        if (confirm(`Вы уверены, что хотите удалить все расчеты за ${selectedDate}?`)) {
+          deleteDayHistory(selectedDate);
+        }
+      }
+    });
+    
+    // Добавляем элементы в контейнер
+    deleteDayContainer.appendChild(deleteDaySelector);
+    deleteDayContainer.appendChild(deleteDayButton);
+    
+    historyContainer.appendChild(deleteDayContainer);
     
     // Контейнер для списка истории
     const historyList = document.createElement('div');

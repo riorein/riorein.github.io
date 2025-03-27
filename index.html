@@ -711,6 +711,63 @@
       text-align: center;
     }
   }
+
+  /* Стили для удаления записей за конкретный день */
+  .delete-day-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    gap: 10px;
+  }
+  
+  .delete-day-selector {
+    flex-grow: 1;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+  }
+  
+  .delete-day-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  
+  .delete-day-button:hover:not(:disabled) {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+  }
+  
+  .delete-day-button:disabled {
+    background-color: #7f8c8d;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  /* Адаптивность для мобильных устройств */
+  @media (max-width: 768px) {
+    .delete-day-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .delete-day-selector,
+    .delete-day-button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
   </style>
 </head>
 <body>
