@@ -23,9 +23,13 @@ const translations = {
     dateLabel: 'Дата',
     leagueLabel: 'Лига',
     resultLabel: 'Результат',
-    detailsLabel: 'Детали'
+    detailsLabel: 'Детали',
+    saveToHistory: 'Сохранить в историю'
   }
 };
+
+// Временное хранилище для текущего расчета
+let currentCalculation = null;
 
 // Структура для хранения истории расчетов
 let calculationHistory = [];
@@ -41,6 +45,72 @@ function loadHistory() {
   if (savedHistory) {
     calculationHistory = JSON.parse(savedHistory);
   }
+}
+
+// Функция для создания кнопки сохранения в историю
+function createSaveToHistoryButton() {
+  // Проверяем, существует ли уже кнопка
+  let saveButton = document.getElementById('saveToHistoryButton');
+  
+  if (!saveButton) {
+    saveButton = document.createElement('button');
+    saveButton.id = 'saveToHistoryButton';
+    saveButton.innerText = translations.history.saveToHistory;
+    saveButton.className = 'save-history-button';
+    saveButton.style.display = 'none'; // По умолчанию скрыта
+    
+    saveButton.addEventListener('click', () => {
+      if (currentCalculation) {
+        addToHistory(currentCalculation.data, currentCalculation.text);
+        // Показываем уведомление о сохранении
+        showNotification('Расчет сохранен в историю');
+      }
+    });
+    
+    // Вставляем кнопку после блока с результатом
+    const resultElement = document.getElementById('result');
+    if (resultElement) {
+      resultElement.after(saveButton);
+    }
+  }
+  
+  return saveButton;
+}
+
+// Функция для отображения временного уведомления
+function showNotification(message) {
+  // Проверяем, существует ли контейнер для уведомлений
+  let notificationContainer = document.getElementById('notificationContainer');
+  
+  if (!notificationContainer) {
+    notificationContainer = document.createElement('div');
+    notificationContainer.id = 'notificationContainer';
+    notificationContainer.className = 'notification-container';
+    document.body.appendChild(notificationContainer);
+  }
+  
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.innerText = message;
+  
+  notificationContainer.appendChild(notification);
+  
+  // Анимация появления
+  setTimeout(() => {
+    notification.style.opacity = '1';
+    notification.style.transform = 'translateY(0)';
+  }, 10);
+  
+  // Автоматическое скрытие через 3 секунды
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    notification.style.transform = 'translateY(-10px)';
+    
+    // Удаление элемента после анимации
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
+  }, 3000);
 }
 
 // Добавление нового расчета в историю
@@ -381,6 +451,16 @@ export function initUI() {
     document.getElementById('wins').classList.remove('invalid');
     document.getElementById('losses').classList.remove('invalid');
     document.getElementById('wonSets').classList.remove('invalid');
+    
+    // Скрываем кнопку сохранения в историю
+    const saveButton = document.getElementById('saveToHistoryButton');
+    if (saveButton) {
+      saveButton.style.display = 'none';
+    }
+    
+    // Обнуляем текущий расчет
+    currentCalculation = null;
+    
     calculatePrize();
   }
 
@@ -416,8 +496,9 @@ export function initUI() {
   // Загружаем историю расчетов
   loadHistory();
   
-  // Создаем UI для истории
+  // Создаем UI для истории и кнопку сохранения
   createHistoryUI();
+  createSaveToHistoryButton();
   
   // Устанавливаем обработчики событий для кнопок
   setupThemeButton();
@@ -492,9 +573,15 @@ export function showResult(text, data) {
     resultElement.classList.add('visible');
   });
   
-  // Сохраняем результат в истории, если переданы данные
+  // Сохраняем текущий расчет для возможного добавления в историю
   if (data) {
-    addToHistory(data, text);
+    currentCalculation = { data, text };
+    
+    // Показываем кнопку сохранения в историю
+    const saveButton = document.getElementById('saveToHistoryButton');
+    if (saveButton) {
+      saveButton.style.display = 'block';
+    }
   }
 }
 

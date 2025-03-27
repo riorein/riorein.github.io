@@ -651,6 +651,66 @@
       opacity: 0;
     }
   }
+
+  /* Стили для кнопки сохранения в историю */
+  .save-history-button {
+    display: block;
+    margin: 10px auto;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    font-weight: bold;
+  }
+  
+  .save-history-button:hover {
+    background-color: #2ecc71;
+    transform: translateY(-2px);
+  }
+  
+  .save-history-button:active {
+    background-color: #219955;
+    transform: translateY(1px);
+  }
+  
+  /* Стили для уведомлений */
+  .notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  .notification {
+    background-color: rgba(39, 174, 96, 0.9);
+    color: white;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  
+  /* Адаптивность для мобильных устройств */
+  @media (max-width: 600px) {
+    .notification-container {
+      top: 10px;
+      right: 10px;
+      left: 10px;
+      width: auto;
+    }
+    
+    .notification {
+      padding: 10px;
+      text-align: center;
+    }
+  }
   </style>
 </head>
 <body>
