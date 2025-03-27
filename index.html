@@ -530,6 +530,7 @@
     // Дождемся полной загрузки страницы
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOMContentLoaded событие запущено');
+      console.log('Текущий язык HTML:', document.documentElement.lang);
       
       // Проверяем, существуют ли кнопки переключения
       const themeToggle = document.getElementById('themeToggle');
@@ -537,6 +538,18 @@
       
       console.log('Кнопка темы:', themeToggle ? 'найдена' : 'не найдена');
       console.log('Кнопка языка:', langToggle ? 'найдена' : 'не найдена');
+      console.log('Текст кнопки языка:', langToggle ? langToggle.innerText : 'недоступно');
+      console.log('Язык в localStorage:', localStorage.getItem('lang'));
+      
+      // Добавим прямой обработчик для кнопки смены языка перед инициализацией UI
+      if (langToggle) {
+        langToggle.addEventListener('click', function() {
+          console.log('Прямой обработчик кнопки языка');
+          const currentLang = document.documentElement.lang;
+          const newLang = currentLang === 'ru' ? 'en' : 'ru';
+          console.log(`Смена языка ${currentLang} -> ${newLang} (прямой обработчик)`);
+        });
+      }
       
       // Инициализация UI
       initUI();
