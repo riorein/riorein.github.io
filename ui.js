@@ -141,9 +141,20 @@ export function addToHistory(data, result) {
 
 // Функция для очистки истории
 function clearHistory() {
-  calculationHistory = [];
+  if (confirm('Вы уверены, что хотите удалить всю историю расчетов?')) {
+    calculationHistory = [];
+    saveHistory();
+    updateHistoryUI();
+    showNotification('Вся история расчетов удалена');
+  }
+}
+
+// Функция для удаления отдельной записи
+function deleteHistoryItem(id) {
+  calculationHistory = calculationHistory.filter(item => item.id !== id);
   saveHistory();
   updateHistoryUI();
+  showNotification('Запись удалена из истории');
 }
 
 // Функция для удаления записей за определенную дату
@@ -188,9 +199,6 @@ function updateHistoryUI() {
   const historyList = document.getElementById('historyList');
   historyList.innerHTML = '';
   
-  // Обновляем список дней для удаления
-  updateDeleteDaySelector();
-  
   // Применяем фильтры
   let filteredHistory = calculationHistory;
   
@@ -212,61 +220,67 @@ function updateHistoryUI() {
     emptyMessage.innerText = translations.history.noRecords;
     historyList.appendChild(emptyMessage);
   } else {
-    // Создаем таблицу для истории
-    const table = document.createElement('table');
-    table.className = 'history-table';
-    
-    // Заголовок таблицы
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    
-    const headers = [
-      translations.history.dateLabel,
-      translations.history.leagueLabel,
-      translations.history.resultLabel,
-      translations.history.detailsLabel
-    ];
-    
-    headers.forEach(headerText => {
-      const th = document.createElement('th');
-      th.innerText = headerText;
-      headerRow.appendChild(th);
-    });
-    
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-    
-    // Тело таблицы
-    const tbody = document.createElement('tbody');
+    // Создаем карточки для истории
+    const cardsContainer = document.createElement('div');
+    cardsContainer.className = 'history-cards';
     
     filteredHistory.forEach(item => {
-      const row = document.createElement('tr');
+      const card = document.createElement('div');
+      card.className = 'history-card';
+      card.dataset.id = item.id;
       
-      const dateCell = document.createElement('td');
-      dateCell.innerText = item.date;
+      // Добавляем кнопку удаления
+      const deleteButton = document.createElement('button');
+      deleteButton.className = 'delete-item-button';
+      deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      deleteButton.title = 'Удалить запись';
       
-      const leagueCell = document.createElement('td');
+      deleteButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Предотвращаем всплытие события клика
+        if (confirm('Вы уверены, что хотите удалить эту запись?')) {
+          deleteHistoryItem(parseInt(card.dataset.id));
+        }
+      });
+      
+      // Заголовок карточки с датой и лигой
+      const cardHeader = document.createElement('div');
+      cardHeader.className = 'card-header';
+      
+      const dateSpan = document.createElement('span');
+      dateSpan.className = 'card-date';
+      dateSpan.innerText = item.date;
+      
+      const leagueSpan = document.createElement('span');
+      leagueSpan.className = 'card-league';
       const leagueNames = {
         'super': 'Супер лига',
         'a': 'А лига',
         'b': 'Б лига',
         'c': 'С лига'
       };
-      leagueCell.innerText = leagueNames[item.league] || item.league;
+      leagueSpan.innerText = leagueNames[item.league] || item.league;
       
-      const resultCell = document.createElement('td');
-      resultCell.innerText = item.result;
+      cardHeader.appendChild(dateSpan);
+      cardHeader.appendChild(leagueSpan);
       
-      const detailsCell = document.createElement('td');
-      detailsCell.innerText = item.details;
+      // Результат расчета
+      const resultDiv = document.createElement('div');
+      resultDiv.className = 'card-result';
+      resultDiv.innerText = item.result;
       
-      row.appendChild(dateCell);
-      row.appendChild(leagueCell);
-      row.appendChild(resultCell);
-      row.appendChild(detailsCell);
+      // Детали расчета
+      const detailsDiv = document.createElement('div');
+      detailsDiv.className = 'card-details';
+      detailsDiv.innerText = item.details;
       
-      // Добавляем возможность восстановить расчет по клику на строку
-      row.addEventListener('click', () => {
+      // Добавляем все элементы в карточку
+      card.appendChild(deleteButton);
+      card.appendChild(cardHeader);
+      card.appendChild(resultDiv);
+      card.appendChild(detailsDiv);
+      
+      // Добавляем возможность восстановить расчет по клику на карточку
+      card.addEventListener('click', () => {
         document.getElementById('league').value = item.league;
         document.getElementById('wins').value = item.wins;
         document.getElementById('losses').value = item.losses;
@@ -280,11 +294,16 @@ function updateHistoryUI() {
         calculatePrize();
       });
       
-      tbody.appendChild(row);
+      cardsContainer.appendChild(card);
     });
     
-    table.appendChild(tbody);
-    historyList.appendChild(table);
+    historyList.appendChild(cardsContainer);
+  }
+  
+  // Обновляем счетчик записей
+  const historyCount = document.getElementById('historyCount');
+  if (historyCount) {
+    historyCount.innerText = calculationHistory.length;
   }
 }
 
@@ -379,10 +398,22 @@ function createHistoryUI() {
     historyContainer.className = 'history-container';
     historyContainer.style.display = 'none'; // Изначально скрыт
     
-    // Заголовок
+    // Заголовок с количеством записей
+    const historyHeaderContainer = document.createElement('div');
+    historyHeaderContainer.className = 'history-header-container';
+    
     const historyHeader = document.createElement('h2');
     historyHeader.innerText = translations.history.title;
-    historyContainer.appendChild(historyHeader);
+    
+    const historyCountBadge = document.createElement('span');
+    historyCountBadge.className = 'history-count-badge';
+    historyCountBadge.id = 'historyCount';
+    historyCountBadge.innerText = '0';
+    
+    historyHeaderContainer.appendChild(historyHeader);
+    historyHeaderContainer.appendChild(historyCountBadge);
+    
+    historyContainer.appendChild(historyHeaderContainer);
     
     // Фильтры
     const filtersContainer = document.createElement('div');
@@ -437,49 +468,6 @@ function createHistoryUI() {
     filtersContainer.appendChild(clearButton);
     
     historyContainer.appendChild(filtersContainer);
-    
-    // Блок для удаления записей за определенный день
-    const deleteDayContainer = document.createElement('div');
-    deleteDayContainer.className = 'delete-day-container';
-    
-    // Селектор для выбора дня
-    const deleteDaySelector = document.createElement('select');
-    deleteDaySelector.id = 'deleteDaySelector';
-    deleteDaySelector.className = 'delete-day-selector';
-    
-    // Пустая опция по умолчанию
-    const emptyOption = document.createElement('option');
-    emptyOption.value = '';
-    emptyOption.innerText = 'Выберите дату для удаления...';
-    deleteDaySelector.appendChild(emptyOption);
-    
-    // Кнопка удаления
-    const deleteDayButton = document.createElement('button');
-    deleteDayButton.innerText = translations.history.deleteDay;
-    deleteDayButton.className = 'delete-day-button';
-    deleteDayButton.disabled = true; // По умолчанию отключена
-    
-    // Активируем кнопку только когда выбрана дата
-    deleteDaySelector.addEventListener('change', () => {
-      deleteDayButton.disabled = !deleteDaySelector.value;
-    });
-    
-    // Обработчик удаления
-    deleteDayButton.addEventListener('click', () => {
-      const selectedDate = deleteDaySelector.value;
-      if (selectedDate) {
-        // Запрашиваем подтверждение
-        if (confirm(`Вы уверены, что хотите удалить все расчеты за ${selectedDate}?`)) {
-          deleteDayHistory(selectedDate);
-        }
-      }
-    });
-    
-    // Добавляем элементы в контейнер
-    deleteDayContainer.appendChild(deleteDaySelector);
-    deleteDayContainer.appendChild(deleteDayButton);
-    
-    historyContainer.appendChild(deleteDayContainer);
     
     // Контейнер для списка истории
     const historyList = document.createElement('div');
