@@ -482,7 +482,6 @@
   <div class="container">
     <div class="button-row">
       <button id="themeToggle" aria-label="Переключить тему" type="button">Светлая тема</button>
-      <button id="langToggle" aria-label="Переключить язык" type="button">EN</button>
     </div>
     <h1>Калькулятор призовых</h1>
     <label for="league">Выберите лигу:</label>
@@ -530,26 +529,10 @@
     // Дождемся полной загрузки страницы
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOMContentLoaded событие запущено');
-      console.log('Текущий язык HTML:', document.documentElement.lang);
       
       // Проверяем, существуют ли кнопки переключения
       const themeToggle = document.getElementById('themeToggle');
-      const langToggle = document.getElementById('langToggle');
-      
       console.log('Кнопка темы:', themeToggle ? 'найдена' : 'не найдена');
-      console.log('Кнопка языка:', langToggle ? 'найдена' : 'не найдена');
-      console.log('Текст кнопки языка:', langToggle ? langToggle.innerText : 'недоступно');
-      console.log('Язык в localStorage:', localStorage.getItem('lang'));
-      
-      // Добавим прямой обработчик для кнопки смены языка перед инициализацией UI
-      if (langToggle) {
-        langToggle.addEventListener('click', function() {
-          console.log('Прямой обработчик кнопки языка');
-          const currentLang = document.documentElement.lang;
-          const newLang = currentLang === 'ru' ? 'en' : 'ru';
-          console.log(`Смена языка ${currentLang} -> ${newLang} (прямой обработчик)`);
-        });
-      }
       
       // Инициализация UI
       initUI();
@@ -559,9 +542,6 @@
       if (themeToggle) {
         console.log('Есть ли обработчик клика для кнопки темы:', !!themeToggle.onclick);
       }
-      if (langToggle) {
-        console.log('Есть ли обработчик клика для кнопки языка:', !!langToggle.onclick);
-      }
       
       // Добавляем дополнительный обработчик напрямую для кнопки расчета
       document.getElementById('calculateButton').addEventListener('click', function() {
@@ -569,21 +549,12 @@
         calculatePrize();
       });
       
-      // Добавляем резервные обработчики для кнопок темы и языка
+      // Добавляем резервный обработчик для кнопки темы
       if (themeToggle && !themeToggle.onclick) {
         console.log('Добавляем резервный обработчик для кнопки темы');
         themeToggle.addEventListener('click', function() {
           console.log('Запасной обработчик для кнопки темы');
           document.body.classList.toggle('light');
-        });
-      }
-      
-      if (langToggle && !langToggle.onclick) {
-        console.log('Добавляем резервный обработчик для кнопки языка');
-        langToggle.addEventListener('click', function() {
-          console.log('Запасной обработчик для кнопки языка');
-          const currentLang = document.documentElement.lang;
-          document.documentElement.lang = currentLang === 'ru' ? 'en' : 'ru';
         });
       }
       
